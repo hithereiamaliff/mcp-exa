@@ -38,7 +38,7 @@ node --version  # Should show v18.0.0 or higher
 To install the Exa MCP server for Claude Desktop automatically via [Smithery](https://smithery.ai/protocol/exa):
 
 ```bash
-npx @smithery/cli install @exa-labs/exa-mcp-server --client claude
+npx @smithery/cli install exa --client claude
 ```
 
 ### Manual Installation
