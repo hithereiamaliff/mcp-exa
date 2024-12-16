@@ -2,8 +2,11 @@
   "name": "@exa-labs/exa-mcp-server",
   "version": "0.1.0",
   "description": "A Model Context Protocol server with Exa which does web search",
-  "private": true,
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exa-labs/exa-mcp-server.git"
+  },
   "bin": {
     "exa-mcp-server": "./build/index.js"
   },
