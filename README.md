@@ -74,13 +74,15 @@ npm link
 
 ## Configuration ⚙️
 
-### 1. Claude Desktop Configuration
+### 1. Configure Claude Desktop to recognize the Exa MCP server
 
-Configure Claude Desktop to recognize the Exa MCP server:
+You can find claude_desktop_config.json inside the settings of Claude Desktop app:
 
-You can also find claude_desktop_config.json inside the settings of Claude Desktop app
+Open the Claude Desktop app and enable Developer Mode from the top-left menu bar. 
 
-or
+Once enabled, open Settings (also from the top-left menu bar) and navigate to the Developer Option, where you'll find the Edit Config button. Clicking it will open the claude_desktop_config.json file, allowing you to make the necessary edits. 
+
+OR (if you want to open claude_desktop_config.json from terminal)
 
 #### For macOS:
 
@@ -101,7 +103,7 @@ code %APPDATA%\Claude\claude_desktop_config.json
 ```
 
 
-2.  Add the Exa server configuration:
+### 2.  Add the Exa server configuration:
     
 
 ```
@@ -120,7 +122,7 @@ code %APPDATA%\Claude\claude_desktop_config.json
 
 Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
-### 2. Restart Claude Desktop
+### 3. Restart Claude Desktop
 
 For the changes to take effect:
 
