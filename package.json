@@ -1,5 +1,5 @@
 {
-  "name": "@exa-labs/exa-mcp-server",
+  "name": "exa-mcp-server",
   "version": "0.1.0",
   "description": "A Model Context Protocol server with Exa which does web search",
   "type": "module",
@@ -13,11 +13,20 @@
   "files": [
     "build"
   ],
+  "keywords": [
+    "mcp",
+    "exa",
+    "search",
+    "claude",
+    "ai"
+  ],
+  "author": "Exa Labs",
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
     "prepare": "npm run build",
     "watch": "tsc --watch",
-    "inspector": "npx @modelcontextprotocol/inspector build/index.js"
+    "inspector": "npx @modelcontextprotocol/inspector build/index.js",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.3",
@@ -27,5 +36,8 @@
   "devDependencies": {
     "@types/node": "^20.11.24",
     "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
