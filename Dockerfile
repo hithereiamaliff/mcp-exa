@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --ignore-scripts
 
 # Copy the rest of the application code into the container
 COPY src/ ./src/
@@ -27,7 +27,7 @@ COPY --from=builder /app/build ./build
 COPY package.json package-lock.json ./
 
 # Install only production dependencies
-RUN npm install --production
+RUN npm ci --production --ignore-scripts
 
 # Set environment variable for the Exa API key
 ENV EXA_API_KEY=your-api-key-here
