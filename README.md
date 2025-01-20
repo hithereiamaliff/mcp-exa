@@ -1,6 +1,6 @@
 # Exa MCP Server 🔍
 [![npm version](https://badge.fury.io/js/exa-mcp-server.svg)](https://www.npmjs.com/package/exa-mcp-server)
-[![smithery badge](https://smithery.ai/badge/exa)](https://smithery.ai/protocol/exa)
+[![smithery badge](https://smithery.ai/badge/exa)](https://smithery.ai/server/exa)
 
 A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa AI Search API for web searches. This setup allows AI models to get real-time web information in a safe and controlled way.
 
@@ -42,7 +42,7 @@ npm install -g exa-mcp-server
 
 ### Using Smithery
 
-To install the Exa MCP server for Claude Desktop automatically via [Smithery](https://smithery.ai/protocol/exa):
+To install the Exa MCP server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/exa):
 
 ```bash
 npx -y @smithery/cli install exa --client claude
