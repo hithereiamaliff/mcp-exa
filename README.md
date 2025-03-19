@@ -6,8 +6,6 @@ A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa
 
 Demo video https://www.loom.com/share/ac676f29664e4c6cb33a2f0a63772038?sid=0e72619f-5bfc-415d-a705-63d326373f60
 
-<a href="https://glama.ai/mcp/servers/8gfe5kbp5y"><img width="380" height="200" src="https://glama.ai/mcp/servers/8gfe5kbp5y/badge" alt="Exa Server MCP server" /></a>
-
 ## What's New in v0.2.0 🔄
 
 - Updated to use the latest MCP TypeScript SDK
