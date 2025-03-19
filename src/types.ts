@@ -4,20 +4,23 @@ export interface ExaSearchRequest {
   type: string;
   numResults: number;
   contents: {
-    text: boolean;
+    text: {
+      maxCharacters?: number;
+    } | boolean;
+    livecrawl?: 'always' | 'fallback';
   };
 }
 
 export interface ExaSearchResult {
-  score: number;
-  title: string;
   id: string;
+  title: string;
   url: string;
   publishedDate: string;
   author: string;
   text: string;
   image?: string;
   favicon?: string;
+  score?: number;
 }
 
 export interface ExaSearchResponse {
@@ -31,22 +34,5 @@ export interface ExaSearchResponse {
 export interface SearchArgs {
   query: string;
   numResults?: number;
-}
-
-// Type guard for search arguments
-export function isValidSearchArgs(args: any): args is SearchArgs {
-  return (
-    typeof args === "object" &&
-    args !== null &&
-    "query" in args &&
-    typeof args.query === "string" &&
-    (args.numResults === undefined || typeof args.numResults === "number")
-  );
-}
-
-// Recent searches cache type
-export interface CachedSearch {
-  query: string;
-  response: ExaSearchResponse;
-  timestamp: string;
+  livecrawl?: 'always' | 'fallback';
 }
