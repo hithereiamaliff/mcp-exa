@@ -1,6 +1,6 @@
 {
   "name": "exa-mcp-server",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A Model Context Protocol server with Exa which does web search",
   "type": "module",
   "repository": {
@@ -29,9 +29,10 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.3",
+    "@modelcontextprotocol/sdk": "^1.7.0",
     "axios": "^1.7.8",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",

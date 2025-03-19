@@ -1,22 +1,13 @@
 #!/usr/bin/env node
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import {
-  ListResourcesRequestSchema,
-  ReadResourceRequestSchema,
-  ListToolsRequestSchema,
-  CallToolRequestSchema,
-  ErrorCode,
-  McpError
-} from "@modelcontextprotocol/sdk/types.js";
+import { z } from "zod";
 import axios from "axios";
 import dotenv from "dotenv";
 import {
   ExaSearchRequest,
   ExaSearchResponse,
-  SearchArgs,
-  isValidSearchArgs,
-  CachedSearch
+  SearchArgs
 } from "./types.js";
 
 dotenv.config();
@@ -31,203 +22,165 @@ const API_CONFIG = {
   ENDPOINTS: {
     SEARCH: '/search'
   },
-  DEFAULT_NUM_RESULTS: 10,
-  MAX_CACHED_SEARCHES: 5
+  DEFAULT_NUM_RESULTS: 5,
+  DEFAULT_MAX_CHARACTERS: 3000
 } as const;
 
+// For debugging
+const log = (message: string) => {
+  console.error(`[EXA-MCP-DEBUG] ${message}`);
+};
+
 class ExaServer {
-  private server: Server;
-  private axiosInstance;
-  private recentSearches: CachedSearch[] = [];
+  private server: McpServer;
+  private activeRequests = new Set<string>();
 
   constructor() {
-    this.server = new Server({
+    this.server = new McpServer({
       name: "exa-search-server",
-      version: "0.1.0"
-    }, {
-      capabilities: {
-        resources: {},
-        tools: {}
-      }
+      version: "0.2.0"
     });
-
-    this.axiosInstance = axios.create({
-      baseURL: API_CONFIG.BASE_URL,
-      headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json',
-        'x-api-key': API_KEY
-      }
-    });
-
-    this.setupHandlers();
-    this.setupErrorHandling();
+    
+    log("Server initialized");
   }
 
-  private setupErrorHandling(): void {
-    this.server.onerror = (error) => {
-      console.error("[MCP Error]", error);
-    };
-
-    process.on('SIGINT', async () => {
-      await this.server.close();
-      process.exit(0);
-    });
-  }
-
-  private setupHandlers(): void {
-    this.setupResourceHandlers();
-    this.setupToolHandlers();
-  }
-
-  private setupResourceHandlers(): void {
-    // List available resources (recent searches)
-    this.server.setRequestHandler(
-      ListResourcesRequestSchema,
-      async () => ({
-        resources: this.recentSearches.map((search, index) => ({
-          uri: `exa://searches/${index}`,
-          name: `Recent search: ${search.query}`,
-          mimeType: "application/json",
-          description: `Search results for: ${search.query} (${search.timestamp})`
-        }))
-      })
-    );
-
-    // Read specific resource
-    this.server.setRequestHandler(
-      ReadResourceRequestSchema,
-      async (request) => {
-        const match = request.params.uri.match(/^exa:\/\/searches\/(\d+)$/);
-        if (!match) {
-          throw new McpError(
-            ErrorCode.InvalidRequest,
-            `Unknown resource: ${request.params.uri}`
-          );
-        }
-
-        const index = parseInt(match[1]);
-        const search = this.recentSearches[index];
-
-        if (!search) {
-          throw new McpError(
-            ErrorCode.InvalidRequest,
-            `Search result not found: ${index}`
-          );
-        }
-
-        return {
-          contents: [{
-            uri: request.params.uri,
-            mimeType: "application/json",
-            text: JSON.stringify(search.response, null, 2)
-          }]
-        };
-      }
-    );
-  }
-
-  private setupToolHandlers(): void {
-    // List available tools
-    this.server.setRequestHandler(
-      ListToolsRequestSchema,
-      async () => ({
-        tools: [{
-          name: "search",
-          description: "Search the web using Exa AI",
-          inputSchema: {
-            type: "object",
-            properties: {
-              query: {
-                type: "string",
-                description: "Search query"
-              },
-              numResults: {
-                type: "number",
-                description: "Number of results to return (default: 10)",
-                minimum: 1,
-                maximum: 50
-              }
-            },
-            required: ["query"]
-          }
-        }]
-      })
-    );
-
-    // Handle tool calls
-    this.server.setRequestHandler(
-      CallToolRequestSchema,
-      async (request) => {
-        if (request.params.name !== "search") {
-          throw new McpError(
-            ErrorCode.MethodNotFound,
-            `Unknown tool: ${request.params.name}`
-          );
-        }
-
-        if (!isValidSearchArgs(request.params.arguments)) {
-          throw new McpError(
-            ErrorCode.InvalidParams,
-            "Invalid search arguments"
-          );
-        }
-
+  private setupTools(): void {
+    // Define the search tool
+    this.server.tool(
+      "search",
+      "Search the web using Exa AI",
+      {
+        query: z.string().describe("Search query"),
+        numResults: z.number().optional().describe("Number of search results to return (default: 5)"),
+        livecrawl: z.enum(['always', 'fallback']).optional().describe("Livecrawl strategy: 'always' to always crawl live, 'fallback' to only crawl when index has no result")
+      },
+      async ({ query, numResults, livecrawl }) => {
+        const requestId = `search-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+        this.activeRequests.add(requestId);
+        
+        log(`[${requestId}] Starting search for query: "${query}"`);
+        
         try {
-          const searchRequest: ExaSearchRequest = {
-            query: request.params.arguments.query,
-            type: "auto",
-            numResults: request.params.arguments.numResults || API_CONFIG.DEFAULT_NUM_RESULTS,
-            contents: {
-              text: true
-            }
-          };
-
-          const response = await this.axiosInstance.post<ExaSearchResponse>(
-            API_CONFIG.ENDPOINTS.SEARCH,
-            searchRequest
-          );
-
-          // Cache the search result
-          this.recentSearches.unshift({
-            query: searchRequest.query,
-            response: response.data,
-            timestamp: new Date().toISOString()
+          // Create a fresh axios instance for each request
+          const axiosInstance = axios.create({
+            baseURL: API_CONFIG.BASE_URL,
+            headers: {
+              'accept': 'application/json',
+              'content-type': 'application/json',
+              'x-api-key': API_KEY
+            },
+            timeout: 25000
           });
 
-          // Keep only recent searches
-          if (this.recentSearches.length > API_CONFIG.MAX_CACHED_SEARCHES) {
-            this.recentSearches.pop();
+          const searchRequest: ExaSearchRequest = {
+            query,
+            type: "auto",
+            numResults: numResults || API_CONFIG.DEFAULT_NUM_RESULTS,
+            contents: {
+              text: {
+                maxCharacters: API_CONFIG.DEFAULT_MAX_CHARACTERS
+              },
+              ...(livecrawl ? { livecrawl } : { livecrawl: 'always' })
+            }
+          };
+          
+          log(`[${requestId}] Sending request to Exa API`);
+          
+          const response = await axiosInstance.post<ExaSearchResponse>(
+            API_CONFIG.ENDPOINTS.SEARCH,
+            searchRequest,
+            { timeout: 25000 }
+          );
+          
+          log(`[${requestId}] Received response from Exa API`);
+
+          if (!response.data || !response.data.results) {
+            log(`[${requestId}] Warning: Empty or invalid response from Exa API`);
+            return {
+              content: [{
+                type: "text" as const,
+                text: "No search results found. Please try a different query."
+              }]
+            };
           }
 
-          return {
+          log(`[${requestId}] Found ${response.data.results.length} results`);
+          
+          const result = {
             content: [{
-              type: "text",
+              type: "text" as const,
               text: JSON.stringify(response.data, null, 2)
             }]
           };
+          
+          log(`[${requestId}] Successfully completed search`);
+          return result;
         } catch (error) {
+          log(`[${requestId}] Error processing search: ${error instanceof Error ? error.message : String(error)}`);
+          
           if (axios.isAxiosError(error)) {
+            // Handle Axios errors specifically
+            const statusCode = error.response?.status || 'unknown';
+            const errorMessage = error.response?.data?.message || error.message;
+            
+            log(`[${requestId}] Axios error (${statusCode}): ${errorMessage}`);
             return {
               content: [{
-                type: "text",
-                text: `Exa API error: ${error.response?.data?.message ?? error.message}`
+                type: "text" as const,
+                text: `Search error (${statusCode}): ${errorMessage}`
               }],
               isError: true,
-            }
+            };
           }
-          throw error;
+          
+          // Handle generic errors
+          return {
+            content: [{
+              type: "text" as const,
+              text: `Search error: ${error instanceof Error ? error.message : String(error)}`
+            }],
+            isError: true,
+          };
+        } finally {
+          // Always clean up
+          this.activeRequests.delete(requestId);
+          log(`[${requestId}] Request finalized, ${this.activeRequests.size} active requests remaining`);
         }
       }
     );
+    
+    log("Search tool registered");
   }
 
   async run(): Promise<void> {
-    const transport = new StdioServerTransport();
-    await this.server.connect(transport);
-    console.error("Exa Search MCP server running on stdio");
+    try {
+      // Set up tools before connecting
+      this.setupTools();
+      
+      log("Starting Exa MCP server...");
+      const transport = new StdioServerTransport();
+      
+      // Handle connection errors
+      transport.onerror = (error) => {
+        log(`Transport error: ${error.message}`);
+      };
+      
+      await this.server.connect(transport);
+      log("Exa Search MCP server running on stdio");
+    } catch (error) {
+      log(`Server initialization error: ${error instanceof Error ? error.message : String(error)}`);
+      throw error;
+    }
   }
 }
 
-const server = new ExaServer();
-server.run().catch(console.error);
+// Create and run the server with proper error handling
+(async () => {
+  try {
+    const server = new ExaServer();
+    await server.run();
+  } catch (error) {
+    log(`Fatal server error: ${error instanceof Error ? error.message : String(error)}`);
+    process.exit(1);
+  }
+})();
