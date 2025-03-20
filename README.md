@@ -6,18 +6,6 @@ A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa
 
 Demo video https://www.loom.com/share/ac676f29664e4c6cb33a2f0a63772038?sid=0e72619f-5bfc-415d-a705-63d326373f60
 
-## What's New in v0.2.0 🔄
-
-- Updated to use the latest MCP TypeScript SDK
-- Improved error handling and resource management
-- More robust parameter validation with Zod
-- Better caching of search results
-- Automatic resource updates after new searches
-- Enhanced Exa API features:
-  - Support for `maxCharacters` to limit text length
-  - Live crawling options with `livecrawl` parameter
-  - Customizable number of results with `numResults` parameter
-  - Control over live crawling behavior with `livecrawl` parameter ('always' or 'fallback')
 
 ## What is MCP? 🤔
 
@@ -210,8 +198,8 @@ This opens an interactive interface where you can explore the server's capabilit
    * Ensure Node.js is properly installed
 
 2. **API Key Issues**
-   * Confirm your Exa API key is valid
-   * Check the API key is correctly set in the Claude Desktop config
+   * Confirm your EXA_API_KEY is valid
+   * Check the EXA_API_KEY is correctly set in the Claude Desktop config
    * Verify no spaces or quotes around the API key
 
 3. **Connection Issues**
