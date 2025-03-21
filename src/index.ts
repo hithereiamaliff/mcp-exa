@@ -17,6 +17,18 @@ if (!API_KEY) {
   throw new Error("EXA_API_KEY environment variable is required");
 }
 
+/**
+ * Exa AI Search MCP Server
+ * 
+ * This MCP server integrates Exa AI's search capabilities with Claude and other MCP-compatible clients.
+ * Exa is a search engine and API specifically designed for up-to-date web searching and retrieval,
+ * offering more recent and comprehensive results than what might be available in an LLM's training data.
+ * 
+ * The server provides a 'search' tool that enables:
+ * - Real-time web searching with configurable parameters
+ * - Scraping a URL and returning the content
+ */
+
 const API_CONFIG = {
   BASE_URL: 'https://api.exa.ai',
   ENDPOINTS: {
@@ -48,7 +60,7 @@ class ExaServer {
     // Define the search tool
     this.server.tool(
       "search",
-      "Search the web using Exa AI",
+      "Search the web using Exa AI - performs real-time web searches and can scrape content from specific URLs. Supports configurable result counts, live crawling options, and returns the content from the most relevant websites.",
       {
         query: z.string().describe("Search query"),
         numResults: z.number().optional().describe("Number of search results to return (default: 5)"),
