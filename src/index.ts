@@ -14,9 +14,9 @@ dotenv.config();
 // Parse command line arguments to determine which tools to enable
 const argv = yargs(hideBin(process.argv))
   .option('tools', {
-    type: 'array',
-    description: 'Specify which tools to enable (if not specified, all enabled-by-default tools are used)',
-    default: []
+    type: 'string',
+    description: 'Comma-separated list of tools to enable (if not specified, all enabled-by-default tools are used)',
+    default: ''
   })
   .option('list-tools', {
     type: 'boolean',
@@ -26,9 +26,12 @@ const argv = yargs(hideBin(process.argv))
   .help()
   .argv;
 
-// Convert to Set for easier lookups
+// Convert comma-separated string to Set for easier lookups
 const argvObj = argv as any;
-const specifiedTools = new Set<string>(argvObj['tools'] || []);
+const toolsString = argvObj['tools'] || '';
+const specifiedTools = new Set<string>(
+  toolsString ? toolsString.split(',').map((tool: string) => tool.trim()) : []
+);
 
 // List all available tools if requested
 if (argvObj['list-tools']) {
@@ -69,7 +72,7 @@ class ExaServer {
   constructor() {
     this.server = new McpServer({
       name: "exa-search-server",
-      version: "0.3.2"
+      version: "0.3.3"
     });
     
     log("Server initialized");

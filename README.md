@@ -152,6 +152,25 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
 }
 ```
 
+For enabling multiple tools, use a comma-separated list:
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "command": "npx",
+      "args": [
+        "/path/to/exa-mcp-server/build/index.js",
+        "--tools=web_search,research_paper_search"
+      ],
+      "env": {
+        "EXA_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
 If you don't specify any tools, all tools enabled by default will be used.
 
 ### 4. Restart Claude Desktop
@@ -174,7 +193,7 @@ npx exa-mcp-server
 npx exa-mcp-server --tools=web_search
 
 # Enable multiple tools
-npx exa-mcp-server --tools=web_search --tools=research_paper_search
+npx exa-mcp-server --tools=web_search,research_paper_search
 
 # List all available tools
 npx exa-mcp-server --list-tools
