@@ -2,6 +2,7 @@
 export interface ExaSearchRequest {
   query: string;
   type: string;
+  category?: string;
   numResults: number;
   contents: {
     text: {

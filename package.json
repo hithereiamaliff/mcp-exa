@@ -1,7 +1,7 @@
 {
   "name": "exa-mcp-server",
-  "version": "0.2.1",
-  "description": "A Model Context Protocol server with Exa which does web search and scraping. Search the web using Exa AI - performs real-time web searches and can scrape content from specific URLs. Supports configurable result counts, live crawling options, and returns the content from the most relevant websites.",
+  "version": "0.3.0",
+  "description": "A Model Context Protocol server with Exa for web search and academic paper search. Provides real-time web searches with configurable tool selection, allowing users to enable or disable specific search capabilities. Supports customizable result counts, live crawling options, and returns content from the most relevant websites.",
   "type": "module",
   "repository": {
     "type": "git",
@@ -16,9 +16,11 @@
   "keywords": [
     "mcp",
     "exa",
-    "search",
+    "websearch",
     "claude",
-    "ai"
+    "ai",
+    "research",
+    "papers"
   ],
   "author": "Exa Labs",
   "scripts": {
@@ -32,10 +34,12 @@
     "@modelcontextprotocol/sdk": "^1.7.0",
     "axios": "^1.7.8",
     "dotenv": "^16.4.5",
+    "yargs": "^17.7.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
+    "@types/yargs": "^17.0.33",
     "typescript": "^5.3.3"
   },
   "engines": {

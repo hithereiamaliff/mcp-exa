@@ -124,13 +124,78 @@ code %APPDATA%\Claude\claude_desktop_config.json
 
 Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
-### 3. Restart Claude Desktop
+### 3. Available Tools & Tool Selection
+
+The Exa MCP server includes the following tools:
+
+- **web_search**: Performs real-time web searches with optimized results and content extraction.
+- **research_paper_search**: Specialized search focused on academic papers and research content.
+
+You can choose which tools to enable or disable by adding command-line arguments to your Claude Desktop configuration:
+
+#### Enable specific tools only (in claude_desktop_config.json):
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "command": "npx",
+      "args": [
+        "/path/to/exa-mcp-server/build/index.js",
+        "--enable-tools=research_paper_search"
+      ],
+      "env": {
+        "EXA_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+#### Disable specific tools:
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "command": "npx",
+      "args": [
+        "/path/to/exa-mcp-server/build/index.js",
+        "--disable-tools=research_paper_search"
+      ],
+      "env": {
+        "EXA_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
+
+### 4. Restart Claude Desktop
 
 For the changes to take effect:
 
 1. Completely quit Claude Desktop (not just close the window)
 2. Start Claude Desktop again
 3. Look for the 🔌 icon to verify the Exa server is connected
+
+## Using via NPX
+
+If you prefer to run the server directly, you can use npx:
+
+```bash
+# Run with all tools
+npx exa-mcp-server
+
+# Enable specific tools only
+npx exa-mcp-server --enable-tools=web_search
+
+# Disable specific tools
+npx exa-mcp-server --disable-tools=research_paper_search
+
+# List all available tools
+npx exa-mcp-server --list-tools
+```
 
 ## Usage 🎯
 
@@ -148,18 +213,6 @@ Search for and summarize the latest news about artificial intelligence startups 
 Find and analyze recent research papers about climate change solutions.
 ```
 
-```
-Search for today's breaking news about tech.
-```
-
-```
-Search for the top 10 AI research papers from 2023, and only use live crawling as a fallback.
-```
-
-```
-Search for electric vehicles and return 3 results, always using live crawling.
-```
-
 The server will:
 
 1. Process the search request
@@ -167,16 +220,6 @@ The server will:
 3. Return formatted results to Claude
 4. Cache the search for future reference
 
-## Features ✨
-
-* **Simplified Web Search Tool**: Enables Claude to search the web with just a query parameter
-* **Customizable Search Parameters**: Control the number of results and live crawling strategy
-* **Automatic Live Crawling**: Uses real-time crawling based on specified strategy
-* **Preset Optimal Parameters**: Uses best defaults for result count and character limits
-* **Search Caching**: Saves recent searches as resources for reference
-* **Error Handling**: Gracefully handles API errors and rate limits
-* **Type Safety**: Full TypeScript implementation with Zod validation
-* **MCP Compliance**: Fully implements the latest MCP protocol specification
 
 ## Testing with MCP Inspector 🔍
 
@@ -213,10 +256,6 @@ This opens an interactive interface where you can explore the server's capabilit
    # Windows
    type "%APPDATA%\Claude\logs\mcp*.log"
    ```
-
-### Getting Help
-
-If you encounter issues, review the [MCP Documentation](https://modelcontextprotocol.io) or visit the [GitHub discussions](https://github.com/orgs/modelcontextprotocol/discussions) for community support.
 
 ## Acknowledgments 🙏
 
