@@ -7,7 +7,7 @@ import { createRequestLogger } from "../utils/logger.js";
 // Register the research paper search tool
 toolRegistry["research_paper_search"] = {
   name: "research_paper_search",
-  description: "Search for research papers using Exa AI - performs targeted academic paper searches with a focus on research content. Returns detailed information about relevant academic papers including titles, authors, publication dates, and content excerpts.",
+  description: "Search across 100M+ research papers with full text access using Exa AI - performs targeted academic paper searches with deep research content coverage. Returns detailed information about relevant academic papers including titles, authors, publication dates, and full text excerpts. Control the number of results and character counts returned to balance comprehensiveness with conciseness based on your task requirements.",
   schema: {
     query: z.string().describe("Research topic or keyword to search for"),
     numResults: z.number().optional().describe("Number of research papers to return (default: 5)"),
