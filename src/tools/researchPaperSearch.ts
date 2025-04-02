@@ -10,9 +10,10 @@ toolRegistry["research_paper_search"] = {
   description: "Search for research papers using Exa AI - performs targeted academic paper searches with a focus on research content. Returns detailed information about relevant academic papers including titles, authors, publication dates, and content excerpts.",
   schema: {
     query: z.string().describe("Research topic or keyword to search for"),
-    numResults: z.number().optional().describe("Number of research papers to return (default: 5)")
+    numResults: z.number().optional().describe("Number of research papers to return (default: 5)"),
+    maxCharacters: z.number().optional().describe("Maximum number of characters to return for each result's text content (Default: 3000)")
   },
-  handler: async ({ query, numResults }, extra) => {
+  handler: async ({ query, numResults, maxCharacters }, extra) => {
     const requestId = `research_paper-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const logger = createRequestLogger(requestId, 'research_paper_search');
     
@@ -37,7 +38,7 @@ toolRegistry["research_paper_search"] = {
         numResults: numResults || API_CONFIG.DEFAULT_NUM_RESULTS,
         contents: {
           text: {
-            maxCharacters: API_CONFIG.DEFAULT_MAX_CHARACTERS
+            maxCharacters: maxCharacters || API_CONFIG.DEFAULT_MAX_CHARACTERS
           },
           livecrawl: 'fallback'
         }

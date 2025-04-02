@@ -6,21 +6,16 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 // Import the tool registry system
-import { toolRegistry, registerEnabledTools } from "./tools/index.js";
+import { toolRegistry } from "./tools/index.js";
 import { log } from "./utils/logger.js";
 
 dotenv.config();
 
 // Parse command line arguments to determine which tools to enable
 const argv = yargs(hideBin(process.argv))
-  .option('enable-tools', {
+  .option('tools', {
     type: 'array',
-    description: 'List of tools to enable (if not specified, all enabled-by-default tools are used)',
-    default: []
-  })
-  .option('disable-tools', {
-    type: 'array',
-    description: 'List of tools to disable',
+    description: 'Specify which tools to enable (if not specified, all enabled-by-default tools are used)',
     default: []
   })
   .option('list-tools', {
@@ -31,10 +26,9 @@ const argv = yargs(hideBin(process.argv))
   .help()
   .argv;
 
-// Convert to Sets for easier lookups
+// Convert to Set for easier lookups
 const argvObj = argv as any;
-const enabledTools = new Set<string>(argvObj['enable-tools'] || []);
-const disabledTools = new Set<string>(argvObj['disable-tools'] || []);
+const specifiedTools = new Set<string>(argvObj['tools'] || []);
 
 // List all available tools if requested
 if (argvObj['list-tools']) {
@@ -75,15 +69,34 @@ class ExaServer {
   constructor() {
     this.server = new McpServer({
       name: "exa-search-server",
-      version: "0.3.0"
+      version: "0.3.1"
     });
     
     log("Server initialized");
   }
 
   private setupTools(): string[] {
-    // Register enabled tools
-    const registeredTools = registerEnabledTools(this.server, enabledTools, disabledTools);
+    // Register tools based on specifications
+    const registeredTools: string[] = [];
+    
+    Object.entries(toolRegistry).forEach(([toolId, tool]) => {
+      // If specific tools were provided, only enable those.
+      // Otherwise, enable all tools marked as enabled by default
+      const shouldRegister = specifiedTools.size > 0 
+        ? specifiedTools.has(toolId) 
+        : tool.enabled;
+      
+      if (shouldRegister) {
+        this.server.tool(
+          tool.name,
+          tool.description,
+          tool.schema,
+          tool.handler
+        );
+        registeredTools.push(toolId);
+      }
+    });
+    
     return registeredTools;
   }
 

@@ -131,9 +131,9 @@ The Exa MCP server includes the following tools:
 - **web_search**: Performs real-time web searches with optimized results and content extraction.
 - **research_paper_search**: Specialized search focused on academic papers and research content.
 
-You can choose which tools to enable or disable by adding command-line arguments to your Claude Desktop configuration:
+You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
 
-#### Enable specific tools (in claude_desktop_config.json):
+#### Specify which tools to enable:
 
 ```json
 {
@@ -142,7 +142,7 @@ You can choose which tools to enable or disable by adding command-line arguments
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--enable-tools=research_paper_search"
+        "--tools=web_search"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -152,24 +152,7 @@ You can choose which tools to enable or disable by adding command-line arguments
 }
 ```
 
-#### Disable specific tools:
-
-```json
-{
-  "mcpServers": {
-    "exa": {
-      "command": "npx",
-      "args": [
-        "/path/to/exa-mcp-server/build/index.js",
-        "--disable-tools=research_paper_search"
-      ],
-      "env": {
-        "EXA_API_KEY": "your-api-key-here"
-      }
-    }
-  }
-}
-```
+If you don't specify any tools, all tools enabled by default will be used.
 
 ### 4. Restart Claude Desktop
 
@@ -184,14 +167,14 @@ For the changes to take effect:
 If you prefer to run the server directly, you can use npx:
 
 ```bash
-# Run with all tools
+# Run with all tools enabled by default
 npx exa-mcp-server
 
 # Enable specific tools only
-npx exa-mcp-server --enable-tools=web_search
+npx exa-mcp-server --tools=web_search
 
-# Disable specific tools
-npx exa-mcp-server --disable-tools=research_paper_search
+# Enable multiple tools
+npx exa-mcp-server --tools=web_search --tools=research_paper_search
 
 # List all available tools
 npx exa-mcp-server --list-tools
