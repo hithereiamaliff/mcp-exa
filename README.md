@@ -133,7 +133,7 @@ The Exa MCP server includes the following tools:
 
 You can choose which tools to enable or disable by adding command-line arguments to your Claude Desktop configuration:
 
-#### Enable specific tools only (in claude_desktop_config.json):
+#### Enable specific tools (in claude_desktop_config.json):
 
 ```json
 {
