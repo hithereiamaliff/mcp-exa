@@ -142,7 +142,7 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search"
+        "--tools=research_paper_search"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
