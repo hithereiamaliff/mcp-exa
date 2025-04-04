@@ -3,6 +3,9 @@ export interface ExaSearchRequest {
   query: string;
   type: string;
   category?: string;
+  includeDomains?: string[];
+  startPublishedDate?: string;
+  endPublishedDate?: string;
   numResults: number;
   contents: {
     text: {

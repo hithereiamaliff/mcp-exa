@@ -130,6 +130,7 @@ The Exa MCP server includes the following tools:
 
 - **web_search**: Performs real-time web searches with optimized results and content extraction.
 - **research_paper_search**: Specialized search focused on academic papers and research content.
+- **twitter_search**: Dedicated Twitter/X.com search that finds tweets, profiles, and conversations.
 
 You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
 
@@ -142,7 +143,7 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=research_paper_search"
+        "--tools=twitter_search"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -161,7 +162,7 @@ For enabling multiple tools, use a comma-separated list:
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search,research_paper_search"
+        "--tools=web_search,research_paper_search,twitter_search"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -213,6 +214,14 @@ Search for and summarize the latest news about artificial intelligence startups 
 
 ```
 Find and analyze recent research papers about climate change solutions.
+```
+
+```
+Search Twitter for posts from @elonmusk about SpaceX.
+```
+
+```
+Find tweets from @samaltman that were published in the last week about AI safety.
 ```
 
 The server will:

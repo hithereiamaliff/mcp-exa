@@ -103,5 +103,5 @@ toolRegistry["research_paper_search"] = {
       };
     }
   },
-  enabled: true  // Enabled by default
+  enabled: false  // Enabled by default
 }; 
