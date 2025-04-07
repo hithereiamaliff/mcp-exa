@@ -131,6 +131,7 @@ The Exa MCP server includes the following tools:
 - **web_search**: Performs real-time web searches with optimized results and content extraction.
 - **research_paper_search**: Specialized search focused on academic papers and research content.
 - **twitter_search**: Dedicated Twitter/X.com search that finds tweets, profiles, and conversations.
+- **company_research**: Comprehensive company research tool that crawls company websites to gather detailed information about businesses.
 
 You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
 
@@ -162,7 +163,7 @@ For enabling multiple tools, use a comma-separated list:
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search,research_paper_search,twitter_search"
+        "--tools=web_search,research_paper_search,twitter_search,company_research"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -222,6 +223,10 @@ Search Twitter for posts from @elonmusk about SpaceX.
 
 ```
 Find tweets from @samaltman that were published in the last week about AI safety.
+```
+
+```
+Research the company exa.ai and find information about their pricing and features.
 ```
 
 The server will:

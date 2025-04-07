@@ -12,6 +12,8 @@ export interface ExaSearchRequest {
       maxCharacters?: number;
     } | boolean;
     livecrawl?: 'always' | 'fallback';
+    subpages?: number;
+    subpageTarget?: string[];
   };
 }
 
