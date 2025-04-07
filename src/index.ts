@@ -72,7 +72,7 @@ class ExaServer {
   constructor() {
     this.server = new McpServer({
       name: "exa-search-server",
-      version: "0.3.4"
+      version: "0.3.5"
     });
     
     log("Server initialized");
