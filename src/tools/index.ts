@@ -7,6 +7,7 @@ import "./researchPaperSearch.js";
 import "./twitterSearch.js";
 import "./companyResearch.js";
 import "./crawling.js";
+import "./competitorFinder.js";
 
 // When adding a new tool, import it here
 // import "./newTool.js"; 

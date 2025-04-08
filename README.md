@@ -133,6 +133,7 @@ The Exa MCP server includes the following tools:
 - **twitter_search**: Dedicated Twitter/X.com search that finds tweets, profiles, and conversations.
 - **company_research**: Comprehensive company research tool that crawls company websites to gather detailed information about businesses.
 - **crawling**: Extracts content from specific URLs, useful for reading articles, PDFs, or any web page when you have the exact URL.
+- **competitor_finder**: Identifies competitors of a company by searching for businesses offering similar products or services.
 
 You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
 
@@ -145,7 +146,7 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search,research_paper_search,twitter_search,company_research,crawling"
+        "--tools=web_search,research_paper_search,twitter_search,company_research,crawling,competitor_finder"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -164,7 +165,7 @@ For enabling multiple tools, use a comma-separated list:
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search,research_paper_search,twitter_search,company_research,crawling"
+        "--tools=web_search,research_paper_search,twitter_search,company_research,crawling,competitor_finder"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -232,6 +233,10 @@ Research the company exa.ai and find information about their pricing and feature
 
 ```
 Extract the content from this research paper: https://arxiv.org/pdf/1706.03762
+```
+
+```
+Find competitors for a company that provides web search API services, excluding exa.ai from the results.
 ```
 
 The server will:

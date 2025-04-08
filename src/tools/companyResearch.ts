@@ -54,7 +54,6 @@ toolRegistry["company_research"] = {
           },
           livecrawl: 'always',
           subpages: subpages || 10,
-          subpageTarget: subpageTarget || ['about', 'pricing', 'faq', 'blog']
         }
       };
       

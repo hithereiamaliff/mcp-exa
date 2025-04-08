@@ -115,5 +115,5 @@ toolRegistry["twitter_search"] = {
       };
     }
   },
-  enabled: false  // Enabled by default
+  enabled: false  // disabled by default
 }; 
