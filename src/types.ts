@@ -17,6 +17,12 @@ export interface ExaSearchRequest {
   };
 }
 
+export interface ExaCrawlRequest {
+  ids: string[];
+  text: boolean;
+  livecrawl?: 'always' | 'fallback';
+}
+
 export interface ExaSearchResult {
   id: string;
   title: string;

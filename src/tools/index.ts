@@ -6,6 +6,7 @@ import "./webSearch.js";
 import "./researchPaperSearch.js";
 import "./twitterSearch.js";
 import "./companyResearch.js";
+import "./crawling.js";
 
 // When adding a new tool, import it here
 // import "./newTool.js"; 
