@@ -128,12 +128,13 @@ Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/
 
 The Exa MCP server includes the following tools:
 
-- **web_search**: Performs real-time web searches with optimized results and content extraction.
+- **web_search_exa**: Performs real-time web searches with optimized results and content extraction.
 - **research_paper_search**: Specialized search focused on academic papers and research content.
 - **twitter_search**: Dedicated Twitter/X.com search that finds tweets, profiles, and conversations.
 - **company_research**: Comprehensive company research tool that crawls company websites to gather detailed information about businesses.
 - **crawling**: Extracts content from specific URLs, useful for reading articles, PDFs, or any web page when you have the exact URL.
 - **competitor_finder**: Identifies competitors of a company by searching for businesses offering similar products or services.
+- **linkedin_search**: Search LinkedIn for companies and people using Exa AI. Simply include company names, person names, or specific LinkedIn URLs in your query.
 
 You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
 
@@ -146,7 +147,7 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search,research_paper_search,twitter_search,company_research,crawling,competitor_finder"
+        "--tools=web_search_exa,research_paper_search,twitter_search,company_research,crawling,competitor_finder,linkedin_search"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -165,7 +166,7 @@ For enabling multiple tools, use a comma-separated list:
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search,research_paper_search,twitter_search,company_research,crawling,competitor_finder"
+        "--tools=web_search_exa,research_paper_search,twitter_search,company_research,crawling,competitor_finder,linkedin_search"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -194,10 +195,10 @@ If you prefer to run the server directly, you can use npx:
 npx exa-mcp-server
 
 # Enable specific tools only
-npx exa-mcp-server --tools=web_search
+npx exa-mcp-server --tools=web_search_exa
 
 # Enable multiple tools
-npx exa-mcp-server --tools=web_search,research_paper_search
+npx exa-mcp-server --tools=web_search_exa,research_paper_search
 
 # List all available tools
 npx exa-mcp-server --list-tools
@@ -209,10 +210,6 @@ Once configured, you can ask Claude to perform web searches. Here are some examp
 
 ```
 Can you search for recent developments in quantum computing?
-```
-
-```
-Search for and summarize the latest news about artificial intelligence startups in new york.
 ```
 
 ```
@@ -237,6 +234,14 @@ Extract the content from this research paper: https://arxiv.org/pdf/1706.03762
 
 ```
 Find competitors for a company that provides web search API services, excluding exa.ai from the results.
+```
+
+```
+Find the LinkedIn profile for Anthropic company.
+```
+
+```
+Search for data scientists at OpenAI on LinkedIn.
 ```
 
 The server will:
