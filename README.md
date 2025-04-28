@@ -11,11 +11,6 @@ A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa
 - An [Exa API key](https://dashboard.exa.ai/api-keys)
 - Git installed
 
-You can verify your Node.js installation by running:
-```bash
-node --version  # Should show v18.0.0 or higher
-```
-
 ## Installation 🛠️
 
 ### NPM Installation
@@ -176,6 +171,8 @@ npx exa-mcp-server --list-tools
 3. **Connection Issues**
    * Restart Claude Desktop completely
    * Check Claude Desktop logs:
+
+4. Node.js should be minimum v18 (or higher)
    
    ```bash
    # macOS
