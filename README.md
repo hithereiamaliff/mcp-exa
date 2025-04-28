@@ -6,24 +6,7 @@ A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa
 
 Demo video https://www.loom.com/share/ac676f29664e4c6cb33a2f0a63772038?sid=0e72619f-5bfc-415d-a705-63d326373f60
 
-
-## What is MCP? 🤔
-
-The Model Context Protocol (MCP) is a system that lets AI apps, like Claude Desktop, connect to external tools and data sources. It gives a clear and safe way for AI assistants to work with local services and APIs while keeping the user in control.
-
-## What does this server do? 🚀
-
-The Exa MCP server:
-- Enables AI assistants to perform web searches using Exa's powerful search API
-- Provides structured search results including titles, URLs, and content snippets
-- Caches recent searches as resources for reference
-- Handles rate limiting and error cases gracefully
-- Supports real-time web crawling for fresh content
-
-
 ## Prerequisites 📋
-
-Before you begin, ensure you have:
 
 - [Node.js](https://nodejs.org/) (v18 or higher)
 - [Claude Desktop](https://claude.ai/download) installed
@@ -51,32 +34,6 @@ To install the Exa MCP server for Claude Desktop automatically via [Smithery](ht
 npx -y @smithery/cli install exa --client claude
 ```
 
-### Manual Installation
-
-1. Clone the repository:
-
-```bash
-git clone https://github.com/exa-labs/exa-mcp-server.git
-cd exa-mcp-server
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-```
-
-3. Build the project:
-
-```bash
-npm run build
-```
-
-4. Create a global link (this makes the server executable from anywhere):
-
-```bash
-npm link
-```
 
 ## Configuration ⚙️
 
@@ -126,7 +83,7 @@ Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/
 
 ### 3. Available Tools & Tool Selection
 
-The Exa MCP server includes the following tools:
+The Exa MCP server includes the following tools, which can be enabled by adding the `--tools`:
 
 - **web_search_exa**: Performs real-time web searches with optimized results and content extraction.
 - **research_paper_search**: Specialized search focused on academic papers and research content.
@@ -204,64 +161,6 @@ npx exa-mcp-server --tools=web_search_exa,research_paper_search
 npx exa-mcp-server --list-tools
 ```
 
-## Usage 🎯
-
-Once configured, you can ask Claude to perform web searches. Here are some example prompts:
-
-```
-Can you search for recent developments in quantum computing?
-```
-
-```
-Find and analyze recent research papers about climate change solutions.
-```
-
-```
-Search Twitter for posts from @elonmusk about SpaceX.
-```
-
-```
-Find tweets from @samaltman that were published in the last week about AI safety.
-```
-
-```
-Research the company exa.ai and find information about their pricing and features.
-```
-
-```
-Extract the content from this research paper: https://arxiv.org/pdf/1706.03762
-```
-
-```
-Find competitors for a company that provides web search API services, excluding exa.ai from the results.
-```
-
-```
-Find the LinkedIn profile for Anthropic company.
-```
-
-```
-Search for data scientists at OpenAI on LinkedIn.
-```
-
-The server will:
-
-1. Process the search request
-2. Query the Exa API with optimal settings (including live crawling)
-3. Return formatted results to Claude
-4. Cache the search for future reference
-
-
-## Testing with MCP Inspector 🔍
-
-You can test the server directly using the MCP Inspector:
-
-```bash
-npx @modelcontextprotocol/inspector node ./build/index.js
-```
-
-This opens an interactive interface where you can explore the server's capabilities, execute search queries, and view cached search results.
-
 ## Troubleshooting 🔧
 
 ### Common Issues
@@ -287,9 +186,3 @@ This opens an interactive interface where you can explore the server's capabilit
    # Windows
    type "%APPDATA%\Claude\logs\mcp*.log"
    ```
-
-## Acknowledgments 🙏
-
-* [Exa AI](https://exa.ai) for their powerful search API
-* [Model Context Protocol](https://modelcontextprotocol.io) for the MCP specification
-* [Anthropic](https://anthropic.com) for Claude Desktop
