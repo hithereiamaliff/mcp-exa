@@ -6,10 +6,9 @@ A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa
 
 ## Prerequisites 📋
 
+- An [Exa API key](https://dashboard.exa.ai/api-keys)
 - [Node.js](https://nodejs.org/) (v18 or higher)
 - [Claude Desktop](https://claude.ai/download) installed
-- An [Exa API key](https://dashboard.exa.ai/api-keys)
-- Git installed
 
 ## Installation 🛠️
 
