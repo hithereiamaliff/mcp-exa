@@ -180,3 +180,9 @@ npx exa-mcp-server --list-tools
    # Windows
    type "%APPDATA%\Claude\logs\mcp*.log"
    ```
+
+<br>
+
+---
+
+Built with ❤️ by team Exa
