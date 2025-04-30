@@ -4,7 +4,6 @@ export { toolRegistry, API_CONFIG } from "./config.js";
 // Import all tools to register them
 import "./webSearch.js";
 import "./researchPaperSearch.js";
-import "./twitterSearch.js";
 import "./companyResearch.js";
 import "./crawling.js";
 import "./competitorFinder.js";
