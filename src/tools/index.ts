@@ -8,6 +8,8 @@ import "./companyResearch.js";
 import "./crawling.js";
 import "./competitorFinder.js";
 import "./linkedInSearch.js";
+import "./wikipediaSearch.js";
+import "./githubSearch.js";
 
 // When adding a new tool, import it here
 // import "./newTool.js"; 
