@@ -83,7 +83,7 @@ The Exa MCP server includes the following tools, which can be enabled by adding 
 - **crawling**: Extracts content from specific URLs, useful for reading articles, PDFs, or any web page when you have the exact URL.
 - **competitor_finder**: Identifies competitors of a company by searching for businesses offering similar products or services.
 - **linkedin_search**: Search LinkedIn for companies and people using Exa AI. Simply include company names, person names, or specific LinkedIn URLs in your query.
-- **wikipedia**: Search and retrieve information from Wikipedia articles on specific topics, giving you accurate, structured knowledge from the world's largest encyclopedia.
+- **wikipedia_search_exa**: Search and retrieve information from Wikipedia articles on specific topics, giving you accurate, structured knowledge from the world's largest encyclopedia.
 - **github_search**: Search GitHub repositories using Exa AI - performs real-time searches on GitHub.com to find relevant repositories, issues, and GitHub accounts.
 
 You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
@@ -97,7 +97,7 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia,github_search"
+        "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia_search_exa,github_search"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -116,7 +116,7 @@ For enabling multiple tools, use a comma-separated list:
       "command": "npx",
       "args": [
         "/path/to/exa-mcp-server/build/index.js",
-        "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia,github_search"
+        "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia_search_exa,github_search"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
