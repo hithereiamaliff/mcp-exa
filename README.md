@@ -4,13 +4,36 @@
 
 A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa AI Search API for web searches. This setup allows AI models to get real-time web information in a safe and controlled way.
 
-## Prerequisites 📋
+## Remote Exa MCP 🌐
 
-- An [Exa API key](https://dashboard.exa.ai/api-keys)
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- [Claude Desktop](https://claude.ai/download) installed
+Connect directly to Exa's hosted MCP server (instead of running it locally).
 
-## Installation 🛠️
+### Remote Exa MCP URL
+
+```
+https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key
+```
+
+Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
+
+### Claude Desktop Configuration for Remote MCP
+
+Add this to your Claude Desktop configuration file:
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key"
+      ]
+    }
+  }
+}
+```
 
 ### NPM Installation
 
@@ -25,7 +48,6 @@ To install the Exa MCP server for Claude Desktop automatically via [Smithery](ht
 ```bash
 npx -y @smithery/cli install exa --client claude
 ```
-
 
 ## Configuration ⚙️
 
@@ -62,7 +84,7 @@ code %APPDATA%\Claude\claude_desktop_config.json
   "mcpServers": {
     "exa": {
       "command": "npx",
-      "args": ["/path/to/exa-mcp-server/build/index.js"],
+      "args": ["-y", "exa-mcp-server"],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
       }
@@ -96,7 +118,8 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
     "exa": {
       "command": "npx",
       "args": [
-        "/path/to/exa-mcp-server/build/index.js",
+        "-y",
+        "exa-mcp-server",
         "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia_search_exa,github_search"
       ],
       "env": {
@@ -115,7 +138,8 @@ For enabling multiple tools, use a comma-separated list:
     "exa": {
       "command": "npx",
       "args": [
-        "/path/to/exa-mcp-server/build/index.js",
+        "-y",
+        "exa-mcp-server",
         "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia_search_exa,github_search"
       ],
       "env": {
@@ -134,7 +158,7 @@ For the changes to take effect:
 
 1. Completely quit Claude Desktop (not just close the window)
 2. Start Claude Desktop again
-3. Look for the 🔌 icon to verify the Exa server is connected
+3. Look for the icon to verify the Exa server is connected
 
 ## Using via NPX
 
@@ -160,8 +184,7 @@ npx exa-mcp-server --list-tools
 
 1. **Server Not Found**
    * Verify the npm link is correctly set up
-   * Check Claude Desktop configuration syntax
-   * Ensure Node.js is properly installed
+   * Check Claude Desktop configuration syntax (json file)
 
 2. **API Key Issues**
    * Confirm your EXA_API_KEY is valid
@@ -171,16 +194,6 @@ npx exa-mcp-server --list-tools
 3. **Connection Issues**
    * Restart Claude Desktop completely
    * Check Claude Desktop logs:
-
-4. Node.js should be minimum v18 (or higher)
-   
-   ```bash
-   # macOS
-   tail -n 20 -f ~/Library/Logs/Claude/mcp*.log
-   
-   # Windows
-   type "%APPDATA%\Claude\logs\mcp*.log"
-   ```
 
 <br>
 
