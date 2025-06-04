@@ -4,9 +4,17 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import dotenv from "dotenv";
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { z } from "zod";
 
-// Import the tool registry system
-import { toolRegistry } from "./tools/index.js";
+// Import tool implementations
+import { registerWebSearchTool } from "./tools/webSearch.js";
+import { registerResearchPaperSearchTool } from "./tools/researchPaperSearch.js";
+import { registerCompanyResearchTool } from "./tools/companyResearch.js";
+import { registerCrawlingTool } from "./tools/crawling.js";
+import { registerCompetitorFinderTool } from "./tools/competitorFinder.js";
+import { registerLinkedInSearchTool } from "./tools/linkedInSearch.js";
+import { registerWikipediaSearchTool } from "./tools/wikipediaSearch.js";
+import { registerGithubSearchTool } from "./tools/githubSearch.js";
 import { log } from "./utils/logger.js";
 
 dotenv.config();
@@ -33,11 +41,23 @@ const specifiedTools = new Set<string>(
   toolsString ? toolsString.split(',').map((tool: string) => tool.trim()) : []
 );
 
+// Tool registry for listing capabilities
+const availableTools = {
+  'web_search_exa': { name: 'Web Search (Exa)', description: 'Real-time web search using Exa AI', enabled: true },
+  'research_paper_search_exa': { name: 'Research Paper Search', description: 'Search academic papers and research', enabled: true },
+  'company_research_exa': { name: 'Company Research', description: 'Research companies and organizations', enabled: true },
+  'crawling_exa': { name: 'Web Crawling', description: 'Extract content from specific URLs', enabled: true },
+  'competitor_finder_exa': { name: 'Competitor Finder', description: 'Find business competitors', enabled: true },
+  'linkedin_search_exa': { name: 'LinkedIn Search', description: 'Search LinkedIn profiles and companies', enabled: true },
+  'wikipedia_search_exa': { name: 'Wikipedia Search', description: 'Search Wikipedia articles', enabled: true },
+  'github_search_exa': { name: 'GitHub Search', description: 'Search GitHub repositories and code', enabled: true }
+};
+
 // List all available tools if requested
 if (argvObj['list-tools']) {
   console.log("Available tools:");
   
-  Object.entries(toolRegistry).forEach(([id, tool]) => {
+  Object.entries(availableTools).forEach(([id, tool]) => {
     console.log(`- ${id}: ${tool.name}`);
     console.log(`  Description: ${tool.description}`);
     console.log(`  Enabled by default: ${tool.enabled ? 'Yes' : 'No'}`);
@@ -63,76 +83,93 @@ if (!API_KEY) {
  * The server provides tools that enable:
  * - Real-time web searching with configurable parameters
  * - Research paper searches
- * - And more to come!
+ * - Company research and analysis
+ * - Competitive intelligence
+ * - And more!
  */
 
-class ExaServer {
-  private server: McpServer;
-
-  constructor() {
-    this.server = new McpServer({
+async function main(): Promise<void> {
+  try {
+    // Create MCP server
+    const server = new McpServer({
       name: "exa-search-server",
-      version: "0.3.10"
+      version: "1.0.0"
     });
     
-    log("Server initialized");
-  }
+    log("Server initialized with modern MCP SDK");
 
-  private setupTools(): string[] {
+    // Helper function to check if a tool should be registered
+    const shouldRegisterTool = (toolId: string): boolean => {
+      if (specifiedTools.size > 0) {
+        return specifiedTools.has(toolId);
+      }
+      return availableTools[toolId as keyof typeof availableTools]?.enabled ?? false;
+    };
+
     // Register tools based on specifications
     const registeredTools: string[] = [];
     
-    Object.entries(toolRegistry).forEach(([toolId, tool]) => {
-      // If specific tools were provided, only enable those.
-      // Otherwise, enable all tools marked as enabled by default
-      const shouldRegister = specifiedTools.size > 0 
-        ? specifiedTools.has(toolId) 
-        : tool.enabled;
-      
-      if (shouldRegister) {
-        this.server.tool(
-          tool.name,
-          tool.description,
-          tool.schema,
-          tool.handler
-        );
-        registeredTools.push(toolId);
-      }
-    });
-    
-    return registeredTools;
-  }
-
-  async run(): Promise<void> {
-    try {
-      // Set up tools before connecting
-      const registeredTools = this.setupTools();
-      
-      log(`Starting Exa MCP server with ${registeredTools.length} tools: ${registeredTools.join(', ')}`);
-      
-      const transport = new StdioServerTransport();
-      
-      // Handle connection errors
-      transport.onerror = (error) => {
-        log(`Transport error: ${error.message}`);
-      };
-      
-      await this.server.connect(transport);
-      log("Exa Search MCP server running on stdio");
-    } catch (error) {
-      log(`Server initialization error: ${error instanceof Error ? error.message : String(error)}`);
-      throw error;
+    if (shouldRegisterTool('web_search_exa')) {
+      registerWebSearchTool(server);
+      registeredTools.push('web_search_exa');
     }
+    
+    if (shouldRegisterTool('research_paper_search_exa')) {
+      registerResearchPaperSearchTool(server);
+      registeredTools.push('research_paper_search_exa');
+    }
+    
+    if (shouldRegisterTool('company_research_exa')) {
+      registerCompanyResearchTool(server);
+      registeredTools.push('company_research_exa');
+    }
+    
+    if (shouldRegisterTool('crawling_exa')) {
+      registerCrawlingTool(server);
+      registeredTools.push('crawling_exa');
+    }
+    
+    if (shouldRegisterTool('competitor_finder_exa')) {
+      registerCompetitorFinderTool(server);
+      registeredTools.push('competitor_finder_exa');
+    }
+    
+    if (shouldRegisterTool('linkedin_search_exa')) {
+      registerLinkedInSearchTool(server);
+      registeredTools.push('linkedin_search_exa');
+    }
+    
+    if (shouldRegisterTool('wikipedia_search_exa')) {
+      registerWikipediaSearchTool(server);
+      registeredTools.push('wikipedia_search_exa');
+    }
+    
+    if (shouldRegisterTool('github_search_exa')) {
+      registerGithubSearchTool(server);
+      registeredTools.push('github_search_exa');
+    }
+    
+    log(`Starting Exa MCP server with ${registeredTools.length} tools: ${registeredTools.join(', ')}`);
+    
+    // Create transport and connect
+    const transport = new StdioServerTransport();
+    
+    // Handle connection errors
+    transport.onerror = (error) => {
+      log(`Transport error: ${error.message}`);
+    };
+    
+    await server.connect(transport);
+    log("Exa Search MCP server running on stdio");
+    
+  } catch (error) {
+    log(`Server initialization error: ${error instanceof Error ? error.message : String(error)}`);
+    throw error;
   }
 }
 
 // Create and run the server with proper error handling
-(async () => {
-  try {
-    const server = new ExaServer();
-    await server.run();
-  } catch (error) {
-    log(`Fatal server error: ${error instanceof Error ? error.message : String(error)}`);
-    process.exit(1);
-  }
-})();
+main().catch((error) => {
+  log(`Fatal server error: ${error instanceof Error ? error.message : String(error)}`);
+  process.exit(1);
+});
