@@ -1,9 +1,5 @@
 #!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import dotenv from "dotenv";
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
 import { z } from "zod";
 
 // Import tool implementations
@@ -17,31 +13,14 @@ import { registerWikipediaSearchTool } from "./tools/wikipediaSearch.js";
 import { registerGithubSearchTool } from "./tools/githubSearch.js";
 import { log } from "./utils/logger.js";
 
-dotenv.config();
+// Configuration schema for the EXA API key and tool selection
+export const configSchema = z.object({
+  exaApiKey: z.string().describe("Exa AI API key for search operations"),
+  enabledTools: z.array(z.string()).optional().describe("List of tools to enable (if not specified, all tools are enabled)"),
+  debug: z.boolean().default(false).describe("Enable debug logging")
+});
 
-// Parse command line arguments to determine which tools to enable
-const argv = yargs(hideBin(process.argv))
-  .option('tools', {
-    type: 'string',
-    description: 'Comma-separated list of tools to enable (if not specified, all enabled-by-default tools are used)',
-    default: ''
-  })
-  .option('list-tools', {
-    type: 'boolean',
-    description: 'List all available tools and exit',
-    default: false
-  })
-  .help()
-  .argv;
-
-// Convert comma-separated string to Set for easier lookups
-const argvObj = argv as any;
-const toolsString = argvObj['tools'] || '';
-const specifiedTools = new Set<string>(
-  toolsString ? toolsString.split(',').map((tool: string) => tool.trim()) : []
-);
-
-// Tool registry for listing capabilities
+// Tool registry for managing available tools
 const availableTools = {
   'web_search_exa': { name: 'Web Search (Exa)', description: 'Real-time web search using Exa AI', enabled: true },
   'research_paper_search_exa': { name: 'Research Paper Search', description: 'Search academic papers and research', enabled: true },
@@ -52,26 +31,6 @@ const availableTools = {
   'wikipedia_search_exa': { name: 'Wikipedia Search', description: 'Search Wikipedia articles', enabled: true },
   'github_search_exa': { name: 'GitHub Search', description: 'Search GitHub repositories and code', enabled: true }
 };
-
-// List all available tools if requested
-if (argvObj['list-tools']) {
-  console.log("Available tools:");
-  
-  Object.entries(availableTools).forEach(([id, tool]) => {
-    console.log(`- ${id}: ${tool.name}`);
-    console.log(`  Description: ${tool.description}`);
-    console.log(`  Enabled by default: ${tool.enabled ? 'Yes' : 'No'}`);
-    console.log();
-  });
-  
-  process.exit(0);
-}
-
-// Check for API key after handling list-tools to allow listing without a key
-const API_KEY = process.env.EXA_API_KEY;
-if (!API_KEY) {
-  throw new Error("EXA_API_KEY environment variable is required");
-}
 
 /**
  * Exa AI Web Search MCP Server
@@ -88,25 +47,32 @@ if (!API_KEY) {
  * - And more!
  */
 
-async function main(): Promise<void> {
+export default function ({ config }: { config: z.infer<typeof configSchema> }) {
   try {
+    // Set the API key in environment for tool functions to use
+    process.env.EXA_API_KEY = config.exaApiKey;
+    
+    if (config.debug) {
+      log("Starting Exa MCP Server in debug mode");
+    }
+
     // Create MCP server
     const server = new McpServer({
       name: "exa-search-server",
       version: "1.0.0"
     });
     
-    log("Server initialized with modern MCP SDK");
+    log("Server initialized with modern MCP SDK and Smithery CLI support");
 
     // Helper function to check if a tool should be registered
     const shouldRegisterTool = (toolId: string): boolean => {
-      if (specifiedTools.size > 0) {
-        return specifiedTools.has(toolId);
+      if (config.enabledTools && config.enabledTools.length > 0) {
+        return config.enabledTools.includes(toolId);
       }
       return availableTools[toolId as keyof typeof availableTools]?.enabled ?? false;
     };
 
-    // Register tools based on specifications
+    // Register tools based on configuration
     const registeredTools: string[] = [];
     
     if (shouldRegisterTool('web_search_exa')) {
@@ -149,27 +115,15 @@ async function main(): Promise<void> {
       registeredTools.push('github_search_exa');
     }
     
-    log(`Starting Exa MCP server with ${registeredTools.length} tools: ${registeredTools.join(', ')}`);
+    if (config.debug) {
+      log(`Registered ${registeredTools.length} tools: ${registeredTools.join(', ')}`);
+    }
     
-    // Create transport and connect
-    const transport = new StdioServerTransport();
-    
-    // Handle connection errors
-    transport.onerror = (error) => {
-      log(`Transport error: ${error.message}`);
-    };
-    
-    await server.connect(transport);
-    log("Exa Search MCP server running on stdio");
+    // Return the server object (Smithery CLI handles transport)
+    return server.server;
     
   } catch (error) {
     log(`Server initialization error: ${error instanceof Error ? error.message : String(error)}`);
     throw error;
   }
 }
-
-// Create and run the server with proper error handling
-main().catch((error) => {
-  log(`Fatal server error: ${error instanceof Error ? error.message : String(error)}`);
-  process.exit(1);
-});
