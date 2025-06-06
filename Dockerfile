@@ -14,8 +14,8 @@ RUN npm ci --ignore-scripts
 COPY src/ ./src/
 COPY tsconfig.json ./
 
-# Build the project
-RUN npm run build:shttp
+# Build the project for Docker
+RUN npm run build:docker
 
 # Use a minimal node image as the base image for running
 FROM node:18-alpine AS runner
