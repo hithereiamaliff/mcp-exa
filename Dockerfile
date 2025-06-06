@@ -15,7 +15,7 @@ COPY src/ ./src/
 COPY tsconfig.json ./
 
 # Build the project
-RUN npm run build
+RUN npm run build:shttp
 
 # Use a minimal node image as the base image for running
 FROM node:18-alpine AS runner
