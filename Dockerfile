@@ -15,7 +15,7 @@ COPY src/ ./src/
 COPY tsconfig.json ./
 
 # Build the project for Docker
-RUN npm run build:docker
+RUN npm run build
 
 # Use a minimal node image as the base image for running
 FROM node:18-alpine AS runner
