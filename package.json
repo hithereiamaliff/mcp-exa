@@ -30,6 +30,7 @@
   "author": "Exa Labs",
   "scripts": {
     "build": "npx @smithery/cli@latest build src/index.ts --transport stdio && echo '#!/usr/bin/env node' | cat - .smithery/index.cjs > temp && mv temp .smithery/index.cjs && chmod +x .smithery/index.cjs",
+    "build:http": "npx @smithery/cli@latest build src/index.ts",
     "prepare": "npm run build",
     "watch": "tsc --watch",
     "dev": "npx @smithery/cli@latest dev",
