@@ -1,99 +1,103 @@
 import { z } from "zod";
 import axios from "axios";
-import { toolRegistry, API_CONFIG } from "./config.js";
-import { ExaCrawlRequest } from "../types.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { API_CONFIG } from "./config.js";
 import { createRequestLogger } from "../utils/logger.js";
 
-// Register the crawling tool
-toolRegistry["crawling"] = {
-  name: "crawling",
-  description: "Extract content from specific URLs using Exa AI - performs targeted crawling of web pages to retrieve their full content. Useful for reading articles, PDFs, or any web page when you have the exact URL. Returns the complete text content of the specified URL.",
-  schema: {
-    url: z.string().describe("The URL to crawl (e.g., 'exa.ai')")
-  },
-  handler: async ({ url }, extra) => {
-    const requestId = `crawling-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
-    const logger = createRequestLogger(requestId, 'crawling');
-    
-    logger.start(url);
-    
-    try {
-      // Create a fresh axios instance for each request
-      const axiosInstance = axios.create({
-        baseURL: API_CONFIG.BASE_URL,
-        headers: {
-          'accept': 'application/json',
-          'content-type': 'application/json',
-          'x-api-key': process.env.EXA_API_KEY || ''
-        },
-        timeout: 25000
-      });
+export function registerCrawlingTool(server: McpServer): void {
+  server.tool(
+    "crawling_exa",
+    "Extract and crawl content from specific URLs using Exa AI - retrieves full text content, metadata, and structured information from web pages. Ideal for extracting detailed content from known URLs.",
+    {
+      url: z.string().describe("URL to crawl and extract content from"),
+      maxCharacters: z.number().optional().describe("Maximum characters to extract (default: 3000)")
+    },
+    async ({ url, maxCharacters }) => {
+      const requestId = `crawling_exa-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+      const logger = createRequestLogger(requestId, 'crawling_exa');
+      
+      logger.start(url);
+      
+      try {
+        // Create a fresh axios instance for each request
+        const axiosInstance = axios.create({
+          baseURL: API_CONFIG.BASE_URL,
+          headers: {
+            'accept': 'application/json',
+            'content-type': 'application/json',
+            'x-api-key': process.env.EXA_API_KEY || ''
+          },
+          timeout: 25000
+        });
 
-      const crawlRequest: ExaCrawlRequest = {
-        ids: [url],
-        text: true,
-        livecrawl: 'always'
-      };
-      
-      logger.log(`Crawling URL: ${url}`);
-      logger.log("Sending crawling request to Exa API");
-      
-      const response = await axiosInstance.post(
-        '/contents',
-        crawlRequest,
-        { timeout: 25000 }
-      );
-      
-      logger.log("Received crawling response from Exa API");
+        const crawlRequest = {
+          ids: [url],
+          contents: {
+            text: {
+              maxCharacters: maxCharacters || API_CONFIG.DEFAULT_MAX_CHARACTERS
+            },
+            livecrawl: 'always'
+          }
+        };
+        
+        logger.log("Sending crawl request to Exa API");
+        
+        const response = await axiosInstance.post(
+          '/contents',
+          crawlRequest,
+          { timeout: 25000 }
+        );
+        
+        logger.log("Received response from Exa API");
 
-      if (!response.data || !response.data.results || response.data.results.length === 0) {
-        logger.log("Warning: Empty or invalid response from Exa API for crawling");
-        return {
+        if (!response.data || !response.data.contents) {
+          logger.log("Warning: Empty or invalid response from Exa API");
+          return {
+            content: [{
+              type: "text" as const,
+              text: "No content found for the provided URL."
+            }]
+          };
+        }
+
+        logger.log(`Successfully crawled content from URL`);
+        
+        const result = {
           content: [{
             type: "text" as const,
-            text: "No content found at the specified URL. Please check the URL and try again."
+            text: JSON.stringify(response.data, null, 2)
           }]
         };
-      }
-
-      logger.log(`Successfully crawled content from URL`);
-      
-      const result = {
-        content: [{
-          type: "text" as const,
-          text: JSON.stringify(response.data, null, 2)
-        }]
-      };
-      
-      logger.complete();
-      return result;
-    } catch (error) {
-      logger.error(error);
-      
-      if (axios.isAxiosError(error)) {
-        // Handle Axios errors specifically
-        const statusCode = error.response?.status || 'unknown';
-        const errorMessage = error.response?.data?.message || error.message;
         
-        logger.log(`Axios error (${statusCode}): ${errorMessage}`);
+        logger.complete();
+        return result;
+      } catch (error) {
+        logger.error(error);
+        
+        if (axios.isAxiosError(error)) {
+          // Handle Axios errors specifically
+          const statusCode = error.response?.status || 'unknown';
+          const errorMessage = error.response?.data?.message || error.message;
+          
+          logger.log(`Axios error (${statusCode}): ${errorMessage}`);
+          return {
+            content: [{
+              type: "text" as const,
+              text: `Crawling error (${statusCode}): ${errorMessage}`
+            }],
+            isError: true,
+          };
+        }
+        
+        // Handle generic errors
         return {
           content: [{
             type: "text" as const,
-            text: `Crawling error (${statusCode}): ${errorMessage}`
+            text: `Crawling error: ${error instanceof Error ? error.message : String(error)}`
           }],
           isError: true,
         };
       }
-      
-      // Handle generic errors
-      return {
-        content: [{
-          type: "text" as const,
-          text: `Crawling error: ${error instanceof Error ? error.message : String(error)}`
-        }],
-        isError: true,
-      };
     }
-  },
-  enabled: false  // Disabled by default
-}; 
+  );
+} 
