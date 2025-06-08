@@ -9,10 +9,10 @@
     "url": "git+https://github.com/exa-labs/exa-mcp-server.git"
   },
   "bin": {
-    "exa-mcp-server": "./build/index.js"
+    "exa-mcp-server": "./.smithery/index.cjs"
   },
   "files": [
-    "build"
+    ".smithery"
   ],
   "keywords": [
     "mcp",
@@ -29,12 +29,14 @@
   ],
   "author": "Exa Labs",
   "scripts": {
-    "build": "tsc && node -e \"require('fs').chmodSync('build/index.js', '755')\"",
-    "prepare": "npm run build",
+    "build": "npm run build:shttp",
+    "build:stdio": "npx @smithery/cli@latest build src/index.ts --transport stdio && echo '#!/usr/bin/env node' | cat - .smithery/index.cjs > temp && mv temp .smithery/index.cjs && chmod +x .smithery/index.cjs",
+    "build:shttp": "npx @smithery/cli@latest build src/index.ts --transport shttp",
+    "prepare": "npm run build:stdio",
     "watch": "tsc --watch",
     "dev": "npx @smithery/cli@latest dev",
     "inspector": "npx @modelcontextprotocol/inspector build/index.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build:stdio"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
@@ -43,6 +45,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
+    "tsx": "^4.7.0",
     "typescript": "^5.3.3"
   },
   "engines": {

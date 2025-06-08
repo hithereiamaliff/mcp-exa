@@ -14,7 +14,7 @@ RUN npm ci --ignore-scripts
 COPY src/ ./src/
 COPY tsconfig.json ./
 
-# Build the project
+# Build the project for Docker
 RUN npm run build
 
 # Use a minimal node image as the base image for running
@@ -23,7 +23,7 @@ FROM node:18-alpine AS runner
 WORKDIR /app
 
 # Copy compiled code from the builder stage
-COPY --from=builder /app/build ./build
+COPY --from=builder /app/.smithery ./.smithery
 COPY package.json package-lock.json ./
 
 # Install only production dependencies
@@ -36,4 +36,4 @@ ENV EXA_API_KEY=your-api-key-here
 EXPOSE 3000
 
 # Run the application
-ENTRYPOINT ["node", "build/index.js"]
+ENTRYPOINT ["node", ".smithery/index.cjs"]

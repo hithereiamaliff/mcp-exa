@@ -15,7 +15,7 @@ import { log } from "./utils/logger.js";
 
 // Configuration schema for the EXA API key and tool selection
 export const configSchema = z.object({
-  exaApiKey: z.string().describe("Exa AI API key for search operations"),
+  exaApiKey: z.string().optional().describe("Exa AI API key for search operations"),
   enabledTools: z.array(z.string()).optional().describe("List of tools to enable (if not specified, all tools are enabled)"),
   debug: z.boolean().default(false).describe("Enable debug logging")
 });
