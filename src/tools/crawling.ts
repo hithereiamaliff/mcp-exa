@@ -36,7 +36,7 @@ export function registerCrawlingTool(server: McpServer): void {
             text: {
               maxCharacters: maxCharacters || API_CONFIG.DEFAULT_MAX_CHARACTERS
             },
-            livecrawl: 'always'
+            livecrawl: 'preferred'
           }
         };
         
