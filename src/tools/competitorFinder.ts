@@ -44,7 +44,7 @@ export function registerCompetitorFinderTool(server: McpServer): void {
             text: {
               maxCharacters: API_CONFIG.DEFAULT_MAX_CHARACTERS
             },
-            livecrawl: 'always'
+            livecrawl: 'preferred'
           },
           includeDomains: ["crunchbase.com", "bloomberg.com", "techcrunch.com", "forbes.com", "businessinsider.com", "reuters.com", "linkedin.com"]
         };

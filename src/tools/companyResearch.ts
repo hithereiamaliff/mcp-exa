@@ -39,7 +39,7 @@ export function registerCompanyResearchTool(server: McpServer): void {
             text: {
               maxCharacters: API_CONFIG.DEFAULT_MAX_CHARACTERS
             },
-            livecrawl: 'always'
+            livecrawl: 'preferred'
           },
           includeDomains: ["bloomberg.com", "reuters.com", "crunchbase.com", "sec.gov", "linkedin.com", "forbes.com", "businesswire.com", "prnewswire.com"]
         };

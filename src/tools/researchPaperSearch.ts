@@ -39,7 +39,7 @@ export function registerResearchPaperSearchTool(server: McpServer): void {
             text: {
               maxCharacters: API_CONFIG.DEFAULT_MAX_CHARACTERS
             },
-            livecrawl: 'always'
+            livecrawl: 'preferred'
           },
           includeDomains: ["arxiv.org", "scholar.google.com", "researchgate.net", "pubmed.ncbi.nlm.nih.gov", "ieee.org", "acm.org"]
         };

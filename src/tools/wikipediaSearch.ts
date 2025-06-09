@@ -39,7 +39,7 @@ export function registerWikipediaSearchTool(server: McpServer): void {
             text: {
               maxCharacters: API_CONFIG.DEFAULT_MAX_CHARACTERS
             },
-            livecrawl: 'always'
+            livecrawl: 'preferred'
           },
           includeDomains: ["wikipedia.org"]
         };
