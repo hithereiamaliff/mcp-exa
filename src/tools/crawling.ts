@@ -50,7 +50,7 @@ export function registerCrawlingTool(server: McpServer, config?: { exaApiKey?: s
         
         logger.log("Received response from Exa API");
 
-        if (!response.data || !response.data.contents) {
+        if (!response.data || !response.data.results) {
           logger.log("Warning: Empty or invalid response from Exa API");
           return {
             content: [{
