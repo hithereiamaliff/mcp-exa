@@ -45,8 +45,7 @@ export function registerCompetitorFinderTool(server: McpServer, config?: { exaAp
               maxCharacters: API_CONFIG.DEFAULT_MAX_CHARACTERS
             },
             livecrawl: 'preferred'
-          },
-          includeDomains: ["crunchbase.com", "bloomberg.com", "techcrunch.com", "forbes.com", "businessinsider.com", "reuters.com", "linkedin.com"]
+          }
         };
         
         logger.log("Sending request to Exa API for competitor analysis");
