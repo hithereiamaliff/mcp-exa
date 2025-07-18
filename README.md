@@ -107,6 +107,8 @@ The Exa MCP server includes the following tools, which can be enabled by adding 
 - **linkedin_search**: Search LinkedIn for companies and people using Exa AI. Simply include company names, person names, or specific LinkedIn URLs in your query.
 - **wikipedia_search_exa**: Search and retrieve information from Wikipedia articles on specific topics, giving you accurate, structured knowledge from the world's largest encyclopedia.
 - **github_search**: Search GitHub repositories using Exa AI - performs real-time searches on GitHub.com to find relevant repositories, issues, and GitHub accounts.
+- **deep_researcher_start**: Start a smart AI researcher for complex questions. The AI will search the web, read many sources, and think deeply about your question to create a detailed research report.
+- **deep_researcher_check**: Check if your research is ready and get the results. Use this after starting a research task to see if it's done and get your comprehensive report.
 
 You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
 
@@ -120,7 +122,7 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
       "args": [
         "-y",
         "exa-mcp-server",
-        "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia_search_exa,github_search"
+        "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia_search_exa,github_search,deep_researcher_start,deep_researcher_check"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -140,7 +142,7 @@ For enabling multiple tools, use a comma-separated list:
       "args": [
         "-y",
         "exa-mcp-server",
-        "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia_search_exa,github_search"
+        "--tools=web_search_exa,research_paper_search,company_research,crawling,competitor_finder,linkedin_search,wikipedia_search_exa,github_search,deep_researcher_start,deep_researcher_check"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
