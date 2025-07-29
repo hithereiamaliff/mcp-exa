@@ -33,7 +33,7 @@ export function registerCompanyResearchTool(server: McpServer, config?: { exaApi
 
         const searchRequest: ExaSearchRequest = {
           query: `${companyName} company business corporation information news financial`,
-          type: "neural",
+          type: "auto",
           numResults: numResults || API_CONFIG.DEFAULT_NUM_RESULTS,
           contents: {
             text: {
