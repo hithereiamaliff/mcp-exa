@@ -33,7 +33,7 @@ export function registerWebSearchTool(server: McpServer, config?: { exaApiKey?: 
 
         const searchRequest: ExaSearchRequest = {
           query,
-          type: "fast",
+          type: "auto",
           numResults: numResults || API_CONFIG.DEFAULT_NUM_RESULTS,
           contents: {
             text: {
