@@ -18,6 +18,9 @@ export const configSchema = z.object({
   debug: z.boolean().default(false).describe("Enable debug logging")
 });
 
+// Export stateless flag for MCP
+export const stateless = true;
+
 // Tool registry for managing available tools
 const availableTools = {
   'web_search_exa': { name: 'Web Search (Exa)', description: 'Real-time web search using Exa AI', enabled: true },
