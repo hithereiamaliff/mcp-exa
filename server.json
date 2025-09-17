@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-07-09/server.schema.json",
+  "name": "io.github.exa-labs/exa-mcp-server",
+  "description": "A Model Context Protocol server with Exa for web search and web crawling. Provides real-time web searches with configurable tool selection, allowing users to enable or disable specific search capabilities. Supports customizable result counts, live crawling options, and returns content from the most relevant websites.",
+  "version": "2.0.4",
+  "packages": [
+    {
+      "registry_type": "npm",
+      "identifier": "exa-mcp-server",
+      "version": "2.0.4"
+    }
+  ],
+  "remotes": [
+    {
+      "type": "sse",
+      "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
+      "description": "Hosted Exa MCP server with real-time web search and web crawling capabilities. Get the API key from https://dashboard.exa.ai/api-keys"
+    }
+  ]
+}
