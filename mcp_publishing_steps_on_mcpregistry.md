@@ -12,7 +12,7 @@ This document outlines the setup for publishing the Exa MCP Server to the offici
 
 **Package Deployment**:
 - Registry: NPM (`exa-mcp-server`)
-- Version: 2.0.3
+- Version: 2.0.5
 
 **Remote Deployment**:
 - Type: Server-Sent Events (SSE)
@@ -83,7 +83,7 @@ npx exa-mcp-server --tools=web_search_exa,deep_researcher_start
 
 2. **Ensure NPM Package is Published**:
    - Your NPM package must be published with the `mcpName` field
-   - Current package: `exa-mcp-server@2.0.4`
+   - Current package: `exa-mcp-server@2.0.5`
 
 3. **Ensure Remote Server is Live**:
    - Your SSE endpoint must be accessible at: `https://mcp.exa.ai/mcp`
