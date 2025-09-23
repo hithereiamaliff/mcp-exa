@@ -2,7 +2,28 @@
 [![npm version](https://badge.fury.io/js/exa-mcp-server.svg)](https://www.npmjs.com/package/exa-mcp-server)
 [![smithery badge](https://smithery.ai/badge/exa)](https://smithery.ai/server/exa)
 
-A Model Context Protocol (MCP) server lets AI assistants like Claude use the Exa AI Search API for web searches. This setup allows AI models to get real-time web information in a safe and controlled way.
+## 🆕 **NEW: Code Search & Documentation Tool** 💻
+
+Find code examples, documentation, and learn from open source projects instantly! The Exa MCP server now includes a powerful **code search tool** that helps you:
+
+✨ **Get code snippets** from GitHub repositories  
+✨ **Find implementation examples** for any library or framework  
+✨ **Access up-to-date documentation** and API usage patterns  
+
+Perfect for LLMs, coding agents (like cursor or claude code), and developers who want to understand how to use libraries, see working code examples, or get current programming documentation.
+
+### 🚀 **Quick Start for Code Search**
+
+```bash
+# Install and run with code search enabled
+npx exa-mcp-server --tools=get_code_context_exa
+```
+
+Exa-code is a context tool for coding agents. It provides agents with fresh information about libraries, APIs, and SDKs with the purpose of reducing hallucinations.
+
+---
+
+A Model Context Protocol (MCP) server that connects AI assistants like Claude to Exa AI's search capabilities, including web search, research tools, and our new code search feature.
 
 ## Remote Exa MCP 🌐
 
@@ -103,8 +124,12 @@ Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/
 
 ### 3. Available Tools & Tool Selection
 
-The Exa MCP server includes the following tools, which can be enabled by adding the `--tools`:
+The Exa MCP server includes powerful tools for developers and researchers:
 
+#### 🔥 **Featured: Code Search Tool**
+- **get_code_context_exa**: 🆕 **NEW!** Search and get relevant code snippets, examples, and documentation from open source libraries, GitHub repositories, and programming frameworks. Perfect for finding up-to-date code documentation, implementation examples, API usage patterns, and best practices from real codebases.
+
+#### 🌐 **Other Available Tools**
 - **web_search_exa**: Performs real-time web searches with optimized results and content extraction.
 - **company_research**: Comprehensive company research tool that crawls company websites to gather detailed information about businesses.
 - **crawling**: Extracts content from specific URLs, useful for reading articles, PDFs, or any web page when you have the exact URL.
@@ -113,6 +138,26 @@ The Exa MCP server includes the following tools, which can be enabled by adding 
 - **deep_researcher_check**: Check if your research is ready and get the results. Use this after starting a research task to see if it's done and get your comprehensive report.
 
 You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
+
+#### 💻 **Setup for Code Search Only** (Recommended for Developers)
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "exa-mcp-server",
+        "--tools=get_code_context_exa,web_search_exa"
+      ],
+      "env": {
+        "EXA_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
+```
 
 #### Specify which tools to enable:
 
@@ -124,7 +169,7 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
       "args": [
         "-y",
         "exa-mcp-server",
-        "--tools=web_search_exa,company_research,crawling,linkedin_search,deep_researcher_start,deep_researcher_check"
+        "--tools=get_code_context_exa,web_search_exa,company_research,crawling,linkedin_search,deep_researcher_start,deep_researcher_check"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -144,7 +189,7 @@ For enabling multiple tools, use a comma-separated list:
       "args": [
         "-y",
         "exa-mcp-server",
-        "--tools=web_search_exa,company_research,crawling,linkedin_search,deep_researcher_start,deep_researcher_check"
+        "--tools=get_code_context_exa,web_search_exa,company_research,crawling,linkedin_search,deep_researcher_start,deep_researcher_check"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -176,30 +221,11 @@ npx exa-mcp-server
 npx exa-mcp-server --tools=web_search_exa
 
 # Enable multiple tools
-npx exa-mcp-server --tools=web_search_exa,company_research
+npx exa-mcp-server --tools=web_search_exa,get_code_context_exa
 
 # List all available tools
 npx exa-mcp-server --list-tools
 ```
-
-## Troubleshooting 🔧
-
-### Common Issues
-
-1. **Server Not Found**
-   * Verify the npm link is correctly set up
-   * Check Claude Desktop configuration syntax (json file)
-
-2. **API Key Issues**
-   * Confirm your EXA_API_KEY is valid
-   * Check the EXA_API_KEY is correctly set in the Claude Desktop config
-   * Verify no spaces or quotes around the API key
-
-3. **Connection Issues**
-   * Restart Claude Desktop completely
-   * Check Claude Desktop logs:
-
-<br>
 
 ---
 

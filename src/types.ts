@@ -126,3 +126,30 @@ export interface DeepResearchErrorResponse {
   message: string;
   name: string;
 }
+
+// Exa Code API Types
+export interface ExaCodeRequest {
+  query: string;
+  tokensNum: number;
+  flags?: string[];
+}
+
+export interface ExaCodeResult {
+  id: string;
+  title: string;
+  url: string;
+  text: string;
+  score?: number;
+}
+
+export interface ExaCodeResponse {
+  requestId: string;
+  query: string;
+  repository?: string;
+  response: string;
+  resultsCount: number;
+  costDollars: string;
+  searchTime: number;
+  outputTokens?: number;
+  traces?: any;
+}

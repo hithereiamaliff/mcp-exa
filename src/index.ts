@@ -9,6 +9,7 @@ import { registerCrawlingTool } from "./tools/crawling.js";
 import { registerLinkedInSearchTool } from "./tools/linkedInSearch.js";
 import { registerDeepResearchStartTool } from "./tools/deepResearchStart.js";
 import { registerDeepResearchCheckTool } from "./tools/deepResearchCheck.js";
+import { registerExaCodeTool } from "./tools/exaCode.js";
 import { log } from "./utils/logger.js";
 
 // Configuration schema for the EXA API key and tool selection
@@ -28,7 +29,8 @@ const availableTools = {
   'crawling_exa': { name: 'Web Crawling', description: 'Extract content from specific URLs', enabled: true },
   'linkedin_search_exa': { name: 'LinkedIn Search', description: 'Search LinkedIn profiles and companies', enabled: true },
   'deep_researcher_start': { name: 'Deep Researcher Start', description: 'Start a comprehensive AI research task', enabled: true },
-  'deep_researcher_check': { name: 'Deep Researcher Check', description: 'Check status and retrieve results of research task', enabled: true }
+  'deep_researcher_check': { name: 'Deep Researcher Check', description: 'Check status and retrieve results of research task', enabled: true },
+  'get_code_context_exa': { name: 'Code Context Search', description: 'Search for code snippets, examples, and documentation from open source repositories', enabled: true }
 };
 
 /**
@@ -104,6 +106,11 @@ export default function ({ config }: { config: z.infer<typeof configSchema> }) {
     if (shouldRegisterTool('deep_researcher_check')) {
       registerDeepResearchCheckTool(server, config);
       registeredTools.push('deep_researcher_check');
+    }
+    
+    if (shouldRegisterTool('get_code_context_exa')) {
+      registerExaCodeTool(server, config);
+      registeredTools.push('get_code_context_exa');
     }
     
     if (config.debug) {

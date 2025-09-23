@@ -3,8 +3,9 @@ export const API_CONFIG = {
   BASE_URL: 'https://api.exa.ai',
   ENDPOINTS: {
     SEARCH: '/search',
-    RESEARCH_TASKS: '/research/v0/tasks'
+    RESEARCH_TASKS: '/research/v0/tasks',
+    CONTEXT: '/context'
   },
-  DEFAULT_NUM_RESULTS: 5,
-  DEFAULT_MAX_CHARACTERS: 3000
+  DEFAULT_NUM_RESULTS: 8,
+  DEFAULT_MAX_CHARACTERS: 2000
 } as const; 

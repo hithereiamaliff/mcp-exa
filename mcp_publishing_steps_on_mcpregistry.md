@@ -150,6 +150,7 @@ When published, users will have access to these tools:
 | `company_research`      | Comprehensive company research tool that crawls company websites to gather detailed information about businesses                                                            |
 | `crawling`              | Extracts content from specific URLs, useful for reading articles, PDFs, or any web page when you have the exact URL                                                         |
 | `linkedin_search`       | Search LinkedIn for companies and people using Exa AI. Simply include company names, person names, or specific LinkedIn URLs in your query                                  |
+| `get_code_context_exa`  | Search and get relevant code snippets, examples, and documentation from open source libraries, GitHub repositories, and programming frameworks                             |
 
 ## Benefits of Hybrid Deployment
 
