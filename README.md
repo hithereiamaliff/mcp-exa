@@ -12,13 +12,6 @@ Find code examples, documentation, and learn from open source projects instantly
 
 Perfect for LLMs, coding agents (like cursor or claude code), and developers who want to understand how to use libraries, see working code examples, or get current programming documentation.
 
-### 🚀 **Quick Start for Code Search**
-
-```bash
-# Install and run with code search enabled
-npx exa-mcp-server --tools=get_code_context_exa
-```
-
 Exa-code is a context tool for coding agents. It provides agents with fresh information about libraries, APIs, and SDKs with the purpose of reducing hallucinations.
 
 ---
