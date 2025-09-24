@@ -2,17 +2,22 @@
 [![npm version](https://badge.fury.io/js/exa-mcp-server.svg)](https://www.npmjs.com/package/exa-mcp-server)
 [![smithery badge](https://smithery.ai/badge/exa)](https://smithery.ai/server/exa)
 
-## 🆕 **NEW: Code Search & Documentation Tool** 💻
+## 🆕 `exa-code`: fast, efficient web context for coding agents
 
-Find code examples, documentation, and learn from open source projects instantly! The Exa MCP server now includes a powerful **code search tool** that helps you:
+Vibe coding should never have a bad vibe. `exa-code` is a huge step towards coding agents that never hallucinate.
 
-✨ **Get code snippets** from GitHub repositories  
-✨ **Find implementation examples** for any library or framework  
-✨ **Access up-to-date documentation** and API usage patterns  
+When your coding agent makes a search query, `exa-code` searches over billions
+of Github repos, docs pages, Stackoverflow posts, and more, to find the perfect, token-efficient context that the agent needs to code correctly. It's powered by the Exa search engine.
 
-Perfect for LLMs, coding agents (like Cursor or Claude Code), and developers who want to understand how to use libraries, see working code examples, or get current programming documentation.
+Examples of queries you can make with `exa-code`:
+* use Exa search in python and make sure content is always livecrawled
+* use correct syntax for vercel ai sdk to call gpt-5 nano asking it how are you
 
 **✨ Works with Cursor and Claude Code!** Use the HTTP-based configuration format:
+
+💎: Installation Exa MCP like below will install Exa web search as well as
+`exa-code`. To maximize performance, be sure to leave *only* `exa-code` turned
+on in your MCP client.
 
 ```json
 {
@@ -27,7 +32,7 @@ Perfect for LLMs, coding agents (like Cursor or Claude Code), and developers who
 ```
 Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
-Exa-code is a context tool for coding agents. It provides agents with fresh information about libraries, APIs, and SDKs with the purpose of reducing hallucinations.
+You can also use `exa-code` thorugh smithery.ai without an Exa API key.
 
 ---
 
