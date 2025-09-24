@@ -10,7 +10,22 @@ Find code examples, documentation, and learn from open source projects instantly
 ✨ **Find implementation examples** for any library or framework  
 ✨ **Access up-to-date documentation** and API usage patterns  
 
-Perfect for LLMs, coding agents (like cursor or claude code), and developers who want to understand how to use libraries, see working code examples, or get current programming documentation.
+Perfect for LLMs, coding agents (like Cursor or Claude Code), and developers who want to understand how to use libraries, see working code examples, or get current programming documentation.
+
+**✨ Works with Cursor and Claude Code!** Use the HTTP-based configuration format:
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "type": "http",
+      "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
+      "headers": {}
+    }
+  }
+}
+```
+Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
 Exa-code is a context tool for coding agents. It provides agents with fresh information about libraries, APIs, and SDKs with the purpose of reducing hallucinations.
 
@@ -44,6 +59,22 @@ Add this to your Claude Desktop configuration file:
         "mcp-remote",
         "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key"
       ]
+    }
+  }
+}
+```
+
+### Cursor and Claude Code Configuration for Remote MCP
+
+For Cursor and Claude Code, use this HTTP-based configuration format:
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "type": "http",
+      "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
+      "headers": {}
     }
   }
 }
