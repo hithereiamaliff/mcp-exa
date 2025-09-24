@@ -98,13 +98,12 @@ npm install -g exa-mcp-server
 claude mcp add exa -e EXA_API_KEY=YOUR_API_KEY -- npx -y exa-mcp-server
 ```
 
-### Using Smithery
+### Using Exa MCP through Smithery
 
-To install the Exa MCP server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/exa):
+To install the Exa MCP server via [Smithery](https://smithery.ai/server/exa), head over to:
 
-```bash
-npx -y @smithery/cli install exa --client claude
-```
+[smithery.ai/server/exa](https://smithery.ai/server/exa)
+
 
 ## Configuration ⚙️
 
