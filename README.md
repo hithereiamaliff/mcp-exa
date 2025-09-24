@@ -23,11 +23,12 @@ Examples of queries you can make with `exa-code`:
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
       "headers": {"remove_me": "By default, Exa MCP includes web_search_exa and
-      exa-code (get_code_context_exa). To maximize performance, please turn off the web search tool."}
+      exa-code (get_code_context_exa). To maximize performance, please turn off the web search tool. And lastly if you want the coding agent to explicitly call exa-code, say use exa-code."}
     }
   }
 }
 ```
+
 Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
 You can also use `exa-code` thorugh https://smithery.ai without an Exa API key.
