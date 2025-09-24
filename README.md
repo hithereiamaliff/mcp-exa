@@ -30,7 +30,7 @@ Examples of queries you can make with `exa-code`:
 ```
 Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
-You can also use `exa-code` thorugh https://smithery.ai without an Exa API key.
+You can also use `exa-code` thorugh [Smithery](https://smithery.ai/server/exa) without an Exa API key.
 
 ---
 
