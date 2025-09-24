@@ -12,6 +12,7 @@ of Github repos, docs pages, Stackoverflow posts, and more, to find the perfect,
 Examples of queries you can make with `exa-code`:
 * use Exa search in python and make sure content is always livecrawled
 * use correct syntax for vercel ai sdk to call gpt-5 nano asking it how are you
+* how to set up a reproducible Nix Rust development environment
 
 **✨ Works with Cursor and Claude Code!** Use the HTTP-based configuration format:
 
