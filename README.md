@@ -22,8 +22,9 @@ Examples of queries you can make with `exa-code`:
     "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
-      "headers": {"remove_me": "By default, Exa MCP includes web_search_exa and
-      exa-code (get_code_context_exa). To maximize performance, please turn off the web search tool. And lastly if you want the coding agent to explicitly call exa-code, say use exa-code."}
+      "headers": {
+        "Remove-Me": "By default, Exa MCP includes web_search_exa and exa-code (get_code_context_exa). To maximize performance, please turn off the web search tool. And lastly if you want the coding agent to explicitly call exa-code, say use exa-code."
+      }
     }
   }
 }
