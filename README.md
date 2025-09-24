@@ -16,24 +16,21 @@ Examples of queries you can make with `exa-code`:
 
 **✨ Works with Cursor and Claude Code!** Use the HTTP-based configuration format:
 
-💎: Installation Exa MCP like below will install Exa web search as well as
-`exa-code`. To maximize performance, be sure to leave *only* `exa-code` turned
-on in your MCP client.
-
 ```json
 {
   "mcpServers": {
     "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
-      "headers": {}
+      "headers": {"remove_me": "By default, Exa MCP includes web_search_exa and
+      exa-code (get_code_context_exa). To maximize performance, please turn off the web search tool."}
     }
   }
 }
 ```
 Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
-You can also use `exa-code` thorugh smithery.ai without an Exa API key.
+You can also use `exa-code` thorugh https://smithery.ai without an Exa API key.
 
 ---
 
