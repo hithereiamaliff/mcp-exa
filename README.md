@@ -21,7 +21,7 @@ Examples of queries you can make with `exa-code`:
   "mcpServers": {
     "exa": {
       "type": "http",
-      "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
+      "url": "https://mcp.exa.ai/mcp",
       "headers": {
         "Remove-Me": "Disable web_search_exa tool if you're just coding. To 100% call exa-code, say 'use exa-code'."
       }
@@ -29,9 +29,6 @@ Examples of queries you can make with `exa-code`:
   }
 }
 ```
-
-
-Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
 You can also use `exa-code` thorugh [Smithery](https://smithery.ai/server/exa) without an Exa API key.
 
@@ -46,10 +43,8 @@ Connect directly to Exa's hosted MCP server (instead of running it locally).
 ### Remote Exa MCP URL
 
 ```
-https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key
+https://mcp.exa.ai/mcp
 ```
-
-Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
 ### Claude Desktop Configuration for Remote MCP
 
@@ -63,7 +58,7 @@ Add this to your Claude Desktop configuration file:
       "args": [
         "-y",
         "mcp-remote",
-        "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key"
+        "https://mcp.exa.ai/mcp"
       ]
     }
   }
@@ -79,7 +74,7 @@ For Cursor and Claude Code, use this HTTP-based configuration format:
   "mcpServers": {
     "exa": {
       "type": "http",
-      "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
+      "url": "https://mcp.exa.ai/mcp",
       "headers": {}
     }
   }
