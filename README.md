@@ -30,7 +30,7 @@ Examples of queries you can make with `exa-code`:
 }
 ```
 
-You can also use `exa-code` thorugh [Smithery](https://smithery.ai/server/exa) without an Exa API key.
+You can also use `exa-code` through [Smithery](https://smithery.ai/server/exa) without an Exa API key.
 
 ---
 
