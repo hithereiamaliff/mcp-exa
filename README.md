@@ -21,13 +21,23 @@ Examples of queries you can make with `exa-code`:
   "mcpServers": {
     "exa": {
       "type": "http",
-      "url": "https://mcp.exa.ai/mcp",
+      "url": "https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY&enabledTools=%5B%22crawling_exa%ss%5D",
       "headers": {
         "Remove-Me": "Disable web_search_exa tool if you're just coding. To 100% call exa-code, say 'use exa-code'."
       }
     }
   }
 }
+```
+
+You may include your exa api key in the url like this:
+```
+https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY
+```
+
+You may whitelist specific tools in the url with the `enabledTools` parameter which expects a url encoded array strings like this:
+```
+https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY&enabledTools=%5B%22crawling_exa%ss%5D
 ```
 
 You can also use `exa-code` through [Smithery](https://smithery.ai/server/exa) without an Exa API key.
