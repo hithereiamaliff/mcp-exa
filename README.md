@@ -21,7 +21,7 @@ Examples of queries you can make with `exa-code`:
   "mcpServers": {
     "exa": {
       "type": "http",
-      "url": "https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY&enabledTools=%5B%22crawling_exa%ss%5D",
+      "url": "https://mcp.exa.ai/mcp",
       "headers": {
         "Remove-Me": "Disable web_search_exa tool if you're just coding. To 100% call exa-code, say 'use exa-code'."
       }
