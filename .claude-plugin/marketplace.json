@@ -36,14 +36,9 @@
       "strict": false,
       "mcpServers": {
         "exa": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "exa-mcp-server"
-          ],
-          "env": {
-            "EXA_API_KEY": "${EXA_API_KEY}"
-          }
+          "type": "http",
+          "url": "https://mcp.exa.ai/mcp",
+          "headers": {}
         }
       }
     }
