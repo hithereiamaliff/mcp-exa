@@ -110,6 +110,25 @@ env = { EXA_API_KEY = "your-api-key-here" }
 
 Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
 
+### Claude Code Plugin
+
+The easiest way to get started with Exa in Claude Code, using plugins:
+
+```bash
+# Add the Exa marketplace
+/plugin marketplace add exa-labs/exa-mcp-server
+
+# Install the plugin
+/plugin install exa-mcp-server
+```
+
+Then set your API key:
+```bash
+export EXA_API_KEY="your-api-key-here"
+```
+
+Get your API key from [dashboard.exa.ai/api-keys](https://dashboard.exa.ai/api-keys).
+
 ### NPM Installation
 
 ```bash
