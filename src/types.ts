@@ -130,7 +130,7 @@ export interface DeepResearchErrorResponse {
 // Exa Code API Types
 export interface ExaCodeRequest {
   query: string;
-  tokensNum: "dynamic" | number;
+  tokensNum: number;
   flags?: string[];
 }
 
