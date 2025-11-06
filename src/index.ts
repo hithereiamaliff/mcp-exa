@@ -94,7 +94,7 @@ export default function ({ config }: { config: z.infer<typeof configSchema> }) {
     const server = new McpServer({
       name: "exa-search-server",
       title: "Exa",
-      version: "3.0.7"
+      version: "3.0.8"
     });
     
     log("Server initialized with modern MCP SDK and Smithery CLI support");
