@@ -11,9 +11,12 @@ export function registerWebSearchTool(server: McpServer, config?: { exaApiKey?: 
     "Search the web using Exa AI - performs real-time web searches and can scrape content from specific URLs. Supports configurable result counts and returns the content from the most relevant websites.",
     {
       query: z.string().describe("Search query"),
-      numResults: z.number().optional().describe("Number of search results to return (default: 5)")
+      numResults: z.number().optional().describe("Number of search results to return (default: 8)"),
+      livecrawl: z.enum(['fallback', 'preferred']).optional().describe("Live crawl mode - 'fallback': use live crawling as backup if cached content unavailable, 'preferred': prioritize live crawling (default: 'fallback')"),
+      type: z.enum(['auto', 'fast', 'deep']).optional().describe("Search type - 'auto': balanced search (default), 'fast': quick results, 'deep': comprehensive search"),
+      contextMaxCharacters: z.number().optional().describe("Maximum characters for context string optimized for LLMs (default: 10000)")
     },
-    async ({ query, numResults }) => {
+    async ({ query, numResults, livecrawl, type, contextMaxCharacters }) => {
       const requestId = `web_search_exa-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
       const logger = createRequestLogger(requestId, 'web_search_exa');
       
@@ -33,13 +36,14 @@ export function registerWebSearchTool(server: McpServer, config?: { exaApiKey?: 
 
         const searchRequest: ExaSearchRequest = {
           query,
-          type: "auto",
+          type: type || "auto",
           numResults: numResults || API_CONFIG.DEFAULT_NUM_RESULTS,
           contents: {
-            text: {
-              maxCharacters: API_CONFIG.DEFAULT_MAX_CHARACTERS
+            text: true,
+            context: {
+              maxCharacters: contextMaxCharacters || 10000
             },
-            livecrawl: 'preferred'
+            livecrawl: livecrawl || 'fallback'
           }
         };
         
@@ -53,7 +57,7 @@ export function registerWebSearchTool(server: McpServer, config?: { exaApiKey?: 
         
         logger.log("Received response from Exa API");
 
-        if (!response.data || !response.data.results) {
+        if (!response.data || !response.data.context) {
           logger.log("Warning: Empty or invalid response from Exa API");
           return {
             content: [{
@@ -63,12 +67,12 @@ export function registerWebSearchTool(server: McpServer, config?: { exaApiKey?: 
           };
         }
 
-        logger.log(`Found ${response.data.results.length} results`);
+        logger.log(`Context received with ${response.data.context.length} characters`);
         
         const result = {
           content: [{
             type: "text" as const,
-            text: JSON.stringify(response.data, null, 2)
+            text: response.data.context
           }]
         };
         
