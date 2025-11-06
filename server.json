@@ -13,8 +13,8 @@
   "remotes": [
     {
       "type": "sse",
-      "url": "https://mcp.exa.ai/mcp?exaApiKey=your-exa-api-key",
-      "description": "Hosted Exa MCP server with web search and web crawling capabilities. Get the API key from https://dashboard.exa.ai/api-keys"
+      "url": "https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check",
+      "description": "Hosted Exa MCP server with web search and web crawling capabilities. Get the API key from https://dashboard.exa.ai/api-keys. Customize the tools parameter to enable only specific tools (comma-separated list)."
     }
   ]
 }

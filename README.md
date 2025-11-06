@@ -35,10 +35,17 @@ You may include your exa api key in the url like this:
 https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY
 ```
 
-You may whitelist specific tools in the url with the `enabledTools` parameter which expects a url encoded array strings like this:
+You can enable specific tools using the `tools` parameter with a comma-separated list:
 ```
-https://mcp.exa.ai/mcp?enabledTools=%5B%22web_search_exa%22%2C%22get_code_context_exa%22%2C%22crawling_exa%22%2C%22company_research_exa%22%2C%22linkedin_search_exa%22%2C%22deep_researcher_start%22%2C%22deep_researcher_check%22%5D
+https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa
 ```
+
+Or enable all tools:
+```
+https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
+```
+
+**Note:** By default, only `web_search_exa` and `get_code_context_exa` are enabled. Add other tools as needed using the `tools` parameter.
 
 ---
 
@@ -206,7 +213,7 @@ The Exa MCP server includes powerful tools for developers and researchers:
 - **deep_researcher_start**: Start a smart AI researcher for complex questions. The AI will search the web, read many sources, and think deeply about your question to create a detailed research report.
 - **deep_researcher_check**: Check if your research is ready and get the results. Use this after starting a research task to see if it's done and get your comprehensive report.
 
-You can choose which tools to enable by adding the `--tools` parameter to your Claude Desktop configuration:
+**Note:** By default, only `web_search_exa` and `get_code_context_exa` are enabled. You can enable additional tools using the `--tools` parameter.
 
 #### 💻 **Setup for Code Search Only** (Recommended for Developers)
 
@@ -238,7 +245,7 @@ You can choose which tools to enable by adding the `--tools` parameter to your C
       "args": [
         "-y",
         "exa-mcp-server",
-        "--tools=get_code_context_exa,web_search_exa,company_research,crawling,linkedin_search,deep_researcher_start,deep_researcher_check"
+        "--tools=get_code_context_exa,web_search_exa,company_research_exa,crawling_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -258,7 +265,7 @@ For enabling multiple tools, use a comma-separated list:
       "args": [
         "-y",
         "exa-mcp-server",
-        "--tools=get_code_context_exa,web_search_exa,company_research,crawling,linkedin_search,deep_researcher_start,deep_researcher_check"
+        "--tools=get_code_context_exa,web_search_exa,company_research_exa,crawling_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -268,15 +275,7 @@ For enabling multiple tools, use a comma-separated list:
 }
 ```
 
-If you don't specify any tools, all tools enabled by default will be used.
 
-### 4. Restart Claude Desktop
-
-For the changes to take effect:
-
-1. Completely quit Claude Desktop (not just close the window)
-2. Start Claude Desktop again
-3. Look for the icon to verify the Exa server is connected
 
 ## Using via NPX
 

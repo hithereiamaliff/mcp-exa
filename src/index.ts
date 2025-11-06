@@ -15,7 +15,14 @@ import { log } from "./utils/logger.js";
 // Configuration schema for the EXA API key and tool selection
 export const configSchema = z.object({
   exaApiKey: z.string().optional().describe("Exa AI API key for search operations"),
-  enabledTools: z.array(z.string()).optional().describe("List of tools to enable (if not specified, all tools are enabled)"),
+  enabledTools: z.union([
+    z.array(z.string()),
+    z.string()
+  ]).optional().describe("List of tools to enable (comma-separated string or array)"),
+  tools: z.union([
+    z.array(z.string()),
+    z.string()
+  ]).optional().describe("List of tools to enable (comma-separated string or array) - alias for enabledTools"),
   debug: z.boolean().default(false).describe("Enable debug logging")
 });
 
@@ -51,11 +58,36 @@ const availableTools = {
 
 export default function ({ config }: { config: z.infer<typeof configSchema> }) {
   try {
-    // Set the API key in environment for tool functions to use
-    // process.env.EXA_API_KEY = config.exaApiKey;
+    // Parse and normalize tool selection
+    // Support both 'tools' and 'enabledTools' parameters
+    // Support both comma-separated strings and arrays
+    let parsedEnabledTools: string[] | undefined;
+    
+    const toolsParam = config.tools || config.enabledTools;
+    
+    if (toolsParam) {
+      if (typeof toolsParam === 'string') {
+        // Parse comma-separated string into array
+        parsedEnabledTools = toolsParam
+          .split(',')
+          .map(tool => tool.trim())
+          .filter(tool => tool.length > 0);
+      } else if (Array.isArray(toolsParam)) {
+        parsedEnabledTools = toolsParam;
+      }
+    }
+    
+    // Create normalized config with parsed tools
+    const normalizedConfig = {
+      ...config,
+      enabledTools: parsedEnabledTools
+    };
     
     if (config.debug) {
       log("Starting Exa MCP Server in debug mode");
+      if (parsedEnabledTools) {
+        log(`Enabled tools from config: ${parsedEnabledTools.join(', ')}`);
+      }
     }
 
     // Create MCP server
@@ -69,8 +101,8 @@ export default function ({ config }: { config: z.infer<typeof configSchema> }) {
 
     // Helper function to check if a tool should be registered
     const shouldRegisterTool = (toolId: string): boolean => {
-      if (config.enabledTools && config.enabledTools.length > 0) {
-        return config.enabledTools.includes(toolId);
+      if (normalizedConfig.enabledTools && normalizedConfig.enabledTools.length > 0) {
+        return normalizedConfig.enabledTools.includes(toolId);
       }
       return availableTools[toolId as keyof typeof availableTools]?.enabled ?? false;
     };
@@ -79,41 +111,41 @@ export default function ({ config }: { config: z.infer<typeof configSchema> }) {
     const registeredTools: string[] = [];
     
     if (shouldRegisterTool('web_search_exa')) {
-      registerWebSearchTool(server, config);
+      registerWebSearchTool(server, normalizedConfig);
       registeredTools.push('web_search_exa');
     }
     
     if (shouldRegisterTool('company_research_exa')) {
-      registerCompanyResearchTool(server, config);
+      registerCompanyResearchTool(server, normalizedConfig);
       registeredTools.push('company_research_exa');
     }
     
     if (shouldRegisterTool('crawling_exa')) {
-      registerCrawlingTool(server, config);
+      registerCrawlingTool(server, normalizedConfig);
       registeredTools.push('crawling_exa');
     }
     
     if (shouldRegisterTool('linkedin_search_exa')) {
-      registerLinkedInSearchTool(server, config);
+      registerLinkedInSearchTool(server, normalizedConfig);
       registeredTools.push('linkedin_search_exa');
     }
     
     if (shouldRegisterTool('deep_researcher_start')) {
-      registerDeepResearchStartTool(server, config);
+      registerDeepResearchStartTool(server, normalizedConfig);
       registeredTools.push('deep_researcher_start');
     }
     
     if (shouldRegisterTool('deep_researcher_check')) {
-      registerDeepResearchCheckTool(server, config);
+      registerDeepResearchCheckTool(server, normalizedConfig);
       registeredTools.push('deep_researcher_check');
     }
     
     if (shouldRegisterTool('get_code_context_exa')) {
-      registerExaCodeTool(server, config);
+      registerExaCodeTool(server, normalizedConfig);
       registeredTools.push('get_code_context_exa');
     }
     
-    if (config.debug) {
+    if (normalizedConfig.debug) {
       log(`Registered ${registeredTools.length} tools: ${registeredTools.join(', ')}`);
     }
     
