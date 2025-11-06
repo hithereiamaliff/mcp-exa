@@ -4,7 +4,7 @@
 [![npm version](https://badge.fury.io/js/exa-mcp-server.svg)](https://www.npmjs.com/package/exa-mcp-server)
 [![smithery badge](https://smithery.ai/badge/exa)](https://smithery.ai/server/exa)
 
-## 🆕 `exa-code`: fast, efficient web context for coding agents
+## Exa Code: fast, efficient web context for coding agents
 
 Vibe coding should never have a bad vibe. `exa-code` is a huge step towards coding agents that never hallucinate.
 
@@ -24,9 +24,7 @@ Examples of queries you can make with `exa-code`:
     "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp",
-      "headers": {
-        "Remove-Me": "Disable web_search_exa tool if you're just coding. To 100% call exa-code, say 'use exa-code'."
-      }
+      "headers": {}
     }
   }
 }
@@ -39,10 +37,8 @@ https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY
 
 You may whitelist specific tools in the url with the `enabledTools` parameter which expects a url encoded array strings like this:
 ```
-https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY&enabledTools=%5B%22crawling_exa%ss%5D
+https://mcp.exa.ai/mcp?enabledTools=%5B%22web_search_exa%22%2C%22get_code_context_exa%22%2C%22crawling_exa%22%2C%22company_research_exa%22%2C%22linkedin_search_exa%22%2C%22deep_researcher_start%22%2C%22deep_researcher_check%22%5D
 ```
-
-You can also use `exa-code` through [Smithery](https://smithery.ai/server/exa) without an Exa API key.
 
 ---
 
@@ -200,10 +196,9 @@ Replace `your-api-key-here` with your actual Exa API key from [dashboard.exa.ai/
 
 The Exa MCP server includes powerful tools for developers and researchers:
 
-#### 🔥 **Featured: Code Search Tool**
-- **get_code_context_exa**: 🆕 **NEW!** Search and get relevant code snippets, examples, and documentation from open source libraries, GitHub repositories, and programming frameworks. Perfect for finding up-to-date code documentation, implementation examples, API usage patterns, and best practices from real codebases.
 
-#### 🌐 **Other Available Tools**
+#### 🌐 **Tools**
+- **get_code_context_exa**: Search and get relevant code snippets, examples, and documentation from open source libraries, GitHub repositories, and programming frameworks. Perfect for finding up-to-date code documentation, implementation examples, API usage patterns, and best practices from real codebases.
 - **web_search_exa**: Performs real-time web searches with optimized results and content extraction.
 - **company_research**: Comprehensive company research tool that crawls company websites to gather detailed information about businesses.
 - **crawling**: Extracts content from specific URLs, useful for reading articles, PDFs, or any web page when you have the exact URL.
