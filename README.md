@@ -30,12 +30,7 @@ Examples of queries you can make with `exa-code`:
 }
 ```
 
-You may include your exa api key in the url like this:
-```
-https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY
-```
-
-You can enable specific tools using the `tools` parameter with a comma-separated list:
+You can enable specific tool(s) using the `tools` parameter (if multiple, then with a comma-separated list):
 ```
 https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa
 ```
@@ -43,6 +38,11 @@ https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa
 Or enable all tools:
 ```
 https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
+```
+
+You may include your exa api key in the url like this:
+```
+https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY
 ```
 
 **Note:** By default, only `web_search_exa` and `get_code_context_exa` are enabled. Add other tools as needed using the `tools` parameter.
@@ -213,7 +213,7 @@ The Exa MCP server includes powerful tools for developers and researchers:
 - **deep_researcher_start**: Start a smart AI researcher for complex questions. The AI will search the web, read many sources, and think deeply about your question to create a detailed research report.
 - **deep_researcher_check**: Check if your research is ready and get the results. Use this after starting a research task to see if it's done and get your comprehensive report.
 
-**Note:** By default, only `web_search_exa` and `get_code_context_exa` are enabled. You can enable additional tools using the `--tools` parameter.
+**Note:** By default, only `web_search_exa` and `get_code_context_exa` are enabled. You can enable additional tools using the `tools=` parameter (see examples below).
 
 #### 💻 **Setup for Code Search Only** (Recommended for Developers)
 
@@ -225,7 +225,7 @@ The Exa MCP server includes powerful tools for developers and researchers:
       "args": [
         "-y",
         "exa-mcp-server",
-        "--tools=get_code_context_exa,web_search_exa"
+        "tools=get_code_context_exa"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -235,7 +235,9 @@ The Exa MCP server includes powerful tools for developers and researchers:
 }
 ```
 
-#### Specify which tools to enable:
+#### Enable All Tools:
+
+You can either enable all tools or any specfic tools. Use a comma-separated list to enable the tools you need:
 
 ```json
 {
@@ -245,7 +247,7 @@ The Exa MCP server includes powerful tools for developers and researchers:
       "args": [
         "-y",
         "exa-mcp-server",
-        "--tools=get_code_context_exa,web_search_exa,company_research_exa,crawling_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check"
+        "tools=get_code_context_exa,web_search_exa,company_research_exa,crawling_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -254,45 +256,20 @@ The Exa MCP server includes powerful tools for developers and researchers:
   }
 }
 ```
-
-For enabling multiple tools, use a comma-separated list:
-
-```json
-{
-  "mcpServers": {
-    "exa": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "exa-mcp-server",
-        "--tools=get_code_context_exa,web_search_exa,company_research_exa,crawling_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check"
-      ],
-      "env": {
-        "EXA_API_KEY": "your-api-key-here"
-      }
-    }
-  }
-}
-```
-
-
 
 ## Using via NPX
 
 If you prefer to run the server directly, you can use npx:
 
 ```bash
-# Run with all tools enabled by default
+# Run with default tools only (web_search_exa and get_code_context_exa)
 npx exa-mcp-server
 
 # Enable specific tools only
-npx exa-mcp-server --tools=web_search_exa
+npx exa-mcp-server tools=web_search_exa
 
-# Enable multiple tools
-npx exa-mcp-server --tools=web_search_exa,get_code_context_exa
-
-# List all available tools
-npx exa-mcp-server --list-tools
+# All tools
+npx exa-mcp-server tools=web_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
 ```
 
 ---
