@@ -16,6 +16,11 @@ export function registerWebSearchTool(server: McpServer, config?: { exaApiKey?: 
       type: z.enum(['auto', 'fast', 'deep']).optional().describe("Search type - 'auto': balanced search (default), 'fast': quick results, 'deep': comprehensive search"),
       contextMaxCharacters: z.number().optional().describe("Maximum characters for context string optimized for LLMs (default: 10000)")
     },
+    {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true
+    },
     async ({ query, numResults, livecrawl, type, contextMaxCharacters }) => {
       const requestId = `web_search_exa-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
       const logger = createRequestLogger(requestId, 'web_search_exa');

@@ -117,6 +117,154 @@ export default function ({ config }: { config: z.infer<typeof configSchema> }) {
       log(`Registered ${registeredTools.length} tools: ${registeredTools.join(', ')}`);
     }
     
+    // Register prompts to help users get started
+    server.prompt(
+      "web_search_help",
+      "Get help with web search using Exa",
+      {},
+      async () => {
+        return {
+          messages: [
+            {
+              role: "user",
+              content: {
+                type: "text",
+                text: "I want to search the web for current information. Can you help me search for recent news about artificial intelligence breakthroughs?"
+              }
+            }
+          ]
+        };
+      }
+    );
+
+    server.prompt(
+      "code_search_help",
+      "Get help finding code examples and documentation",
+      {},
+      async () => {
+        return {
+          messages: [
+            {
+              role: "user",
+              content: {
+                type: "text",
+                text: "I need help with a programming task. Can you search for examples of how to use React hooks for state management?"
+              }
+            }
+          ]
+        };
+      }
+    );
+    
+    // Register resources to expose server information
+    server.resource(
+      "tools_list",
+      "exa://tools/list",
+      {
+        mimeType: "application/json",
+        description: "List of available Exa tools and their descriptions"
+      },
+      async () => {
+        const toolsList = Object.entries(availableTools).map(([id, tool]) => ({
+          id,
+          name: tool.name,
+          description: tool.description,
+          enabled: registeredTools.includes(id)
+        }));
+        
+        return {
+          contents: [{
+            uri: "exa://tools/list",
+            text: JSON.stringify(toolsList, null, 2),
+            mimeType: "application/json"
+          }]
+        };
+      }
+    );
+
+    server.resource(
+      "web_search_examples",
+      "exa://examples/web-search",
+      {
+        mimeType: "text/markdown",
+        description: "Examples of how to use the web search tool"
+      },
+      async () => {
+        const examplesText = `# Web Search Examples
+
+## Basic Search
+Search for current information on any topic:
+- "latest news about artificial intelligence"
+- "best practices for React development 2024"
+- "climate change recent studies"
+
+## Search with Options
+Customize your search with parameters:
+- numResults: Control how many results to get (default: 8)
+- type: Choose 'auto', 'fast', or 'deep' search
+- livecrawl: Use 'preferred' for most current content
+- contextMaxCharacters: Adjust result length (default: 10000)
+
+## Tips
+- Be specific with your search terms
+- Use 'deep' type for comprehensive research
+- Use 'fast' type for quick answers
+- Use 'preferred' livecrawl for latest information`;
+
+        return {
+          contents: [{
+            uri: "exa://examples/web-search",
+            text: examplesText,
+            mimeType: "text/markdown"
+          }]
+        };
+      }
+    );
+
+    server.resource(
+      "code_search_examples",
+      "exa://examples/code-search",
+      {
+        mimeType: "text/markdown",
+        description: "Examples of how to use the code context search"
+      },
+      async () => {
+        const examplesText = `# Code Search Examples
+
+## Finding Framework Examples
+Get code examples and documentation:
+- "React useState hook examples"
+- "Python pandas dataframe filtering"
+- "Express.js middleware authentication"
+- "Next.js 14 server actions"
+
+## API Documentation
+Search for API references:
+- "Stripe payment integration Node.js"
+- "OpenAI API streaming responses"
+- "AWS S3 file upload examples"
+
+## Best Practices
+Search for best practices and patterns:
+- "React context vs Redux when to use"
+- "Python async await patterns"
+- "TypeScript generics best practices"
+
+## Tips
+- Be specific about the library or framework
+- Include the programming language if helpful
+- Adjust tokensNum parameter (1000-50000) based on how much context you need`;
+
+        return {
+          contents: [{
+            uri: "exa://examples/code-search",
+            text: examplesText,
+            mimeType: "text/markdown"
+          }]
+        };
+      }
+    );
+    
     // Return the server object (Smithery CLI handles transport)
     return server.server;
     
