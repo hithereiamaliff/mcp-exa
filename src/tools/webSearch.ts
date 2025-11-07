@@ -10,7 +10,7 @@ export function registerWebSearchTool(server: McpServer, config?: { exaApiKey?: 
     "web_search_exa",
     "Search the web using Exa AI - performs real-time web searches and can scrape content from specific URLs. Supports configurable result counts and returns the content from the most relevant websites.",
     {
-      query: z.string().describe("Search query"),
+      query: z.string().describe("Websearch query"),
       numResults: z.number().optional().describe("Number of search results to return (default: 8)"),
       livecrawl: z.enum(['fallback', 'preferred']).optional().describe("Live crawl mode - 'fallback': use live crawling as backup if cached content unavailable, 'preferred': prioritize live crawling (default: 'fallback')"),
       type: z.enum(['auto', 'fast', 'deep']).optional().describe("Search type - 'auto': balanced search (default), 'fast': quick results, 'deep': comprehensive search"),
