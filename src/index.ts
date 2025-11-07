@@ -2,6 +2,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 
+// Import agnost for tracking MCP usage
+import { trackMCP, createConfig } from 'agnost';
+
 // Import tool implementations
 import { registerWebSearchTool } from "./tools/webSearch.js";
 import { registerCompanyResearchTool } from "./tools/companyResearch.js";
@@ -213,6 +216,15 @@ export default function ({ config }: { config: z.infer<typeof configSchema> }) {
         };
       }
     );
+    
+    // Add Agnost analytics tracking
+    trackMCP(server.server, "f0df908b-3703-40a0-a905-05c907da1ca3", createConfig({
+      endpoint: "https://api.agnost.ai"
+    }));
+    
+    if (config.debug) {
+      log("Agnost analytics tracking enabled");
+    }
     
     // Return the server object (Smithery CLI handles transport)
     return server.server;
