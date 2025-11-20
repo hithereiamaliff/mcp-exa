@@ -37,7 +37,7 @@ https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa
 
 Or enable all tools:
 ```
-https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
+https://mcp.exa.ai/mcp?tools=web_search_exa,deep_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
 ```
 
 You may include your exa api key in the url like this:
@@ -207,6 +207,7 @@ The Exa MCP server includes powerful tools for developers and researchers:
 #### 🌐 **Tools**
 - **get_code_context_exa**: Search and get relevant code snippets, examples, and documentation from open source libraries, GitHub repositories, and programming frameworks. Perfect for finding up-to-date code documentation, implementation examples, API usage patterns, and best practices from real codebases.
 - **web_search_exa**: Performs real-time web searches with optimized results and content extraction.
+- **deep_search_exa**: Deep web search with smart query expansion and high-quality summaries for each result.
 - **company_research**: Comprehensive company research tool that crawls company websites to gather detailed information about businesses.
 - **crawling**: Extracts content from specific URLs, useful for reading articles, PDFs, or any web page when you have the exact URL.
 - **linkedin_search**: Search LinkedIn for companies and people using Exa AI. Simply include company names, person names, or specific LinkedIn URLs in your query.
@@ -247,7 +248,7 @@ You can either enable all tools or any specfic tools. Use a comma-separated list
       "args": [
         "-y",
         "exa-mcp-server",
-        "tools=get_code_context_exa,web_search_exa,company_research_exa,crawling_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check"
+        "tools=get_code_context_exa,web_search_exa,deep_search_exa,company_research_exa,crawling_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check"
       ],
       "env": {
         "EXA_API_KEY": "your-api-key-here"
@@ -269,7 +270,7 @@ npx exa-mcp-server
 npx exa-mcp-server tools=web_search_exa
 
 # All tools
-npx exa-mcp-server tools=web_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
+npx exa-mcp-server tools=web_search_exa,deep_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
 ```
 
 ---

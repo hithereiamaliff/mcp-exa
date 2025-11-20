@@ -7,6 +7,7 @@ import { trackMCP, createConfig } from 'agnost';
 
 // Import tool implementations
 import { registerWebSearchTool } from "./tools/webSearch.js";
+import { registerDeepSearchTool } from "./tools/deepSearch.js";
 import { registerCompanyResearchTool } from "./tools/companyResearch.js";
 import { registerCrawlingTool } from "./tools/crawling.js";
 import { registerLinkedInSearchTool } from "./tools/linkedInSearch.js";
@@ -36,6 +37,7 @@ export const stateless = true;
 const availableTools = {
   'web_search_exa': { name: 'Web Search (Exa)', description: 'Real-time web search using Exa AI', enabled: true },
   'get_code_context_exa': { name: 'Code Context Search', description: 'Search for code snippets, examples, and documentation from open source repositories', enabled: true },
+  'deep_search_exa': { name: 'Deep Search (Exa)', description: 'Advanced web search with query expansion and high-quality summaries', enabled: false },
   'crawling_exa': { name: 'Web Crawling', description: 'Extract content from specific URLs', enabled: false },
   'deep_researcher_start': { name: 'Deep Researcher Start', description: 'Start a comprehensive AI research task', enabled: false },
   'deep_researcher_check': { name: 'Deep Researcher Check', description: 'Check status and retrieve results of research task', enabled: false },
@@ -116,6 +118,11 @@ export default function ({ config }: { config: z.infer<typeof configSchema> }) {
     if (shouldRegisterTool('web_search_exa')) {
       registerWebSearchTool(server, normalizedConfig);
       registeredTools.push('web_search_exa');
+    }
+    
+    if (shouldRegisterTool('deep_search_exa')) {
+      registerDeepSearchTool(server, normalizedConfig);
+      registeredTools.push('deep_search_exa');
     }
     
     if (shouldRegisterTool('company_research_exa')) {

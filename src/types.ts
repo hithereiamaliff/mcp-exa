@@ -8,6 +8,7 @@ export interface ExaSearchRequest {
   startPublishedDate?: string;
   endPublishedDate?: string;
   numResults: number;
+  queryVariants?: string[];
   contents: {
     text: {
       maxCharacters?: number;
@@ -15,6 +16,9 @@ export interface ExaSearchRequest {
     context?: {
       maxCharacters?: number;
     };
+    summary?: {
+      query?: string;
+    } | boolean;
     livecrawl?: 'fallback' | 'preferred';
     subpages?: number;
     subpageTarget?: string[];
@@ -34,6 +38,7 @@ export interface ExaSearchResult {
   publishedDate: string;
   author: string;
   text: string;
+  summary?: string;
   image?: string;
   favicon?: string;
   score?: number;
