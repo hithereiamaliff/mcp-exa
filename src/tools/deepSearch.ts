@@ -11,7 +11,7 @@ export function registerDeepSearchTool(server: McpServer, config?: { exaApiKey?:
     "Searches the web and return results in a natural language format. Deep search uses smart query expansion and provides high-quality summaries for each result. You can provide query variations for even better results.",
     {
       objective: z.string().describe("Query: Description of what the web search is looking for. Try to make the search query atomic - looking for a specific piece of information. May include guidance about preferred sources or freshness."),
-      search_queries: z.array(z.string()).optional().describe("Query Variants: Optional list of keyword search queries, may include search operators. The search queries should be related to the user's objective. Limited to 5 entries of up to 5 words each (around 200 characters)."),
+      search_queries: z.array(z.string()).describe("Query Variants: List of search queries, may include search operators. The search queries should be related to the objective. Only 2-4 query variants are recommended."),
       numResults: z.number().optional().describe("Number of search results to return (default: 10)"),
       livecrawl: z.enum(['fallback', 'preferred']).optional().describe("Live crawl mode - 'fallback': use live crawling as backup if cached content unavailable, 'preferred': prioritize live crawling (default: 'fallback')"),
     },
