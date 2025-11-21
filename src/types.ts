@@ -7,15 +7,15 @@ export interface ExaSearchRequest {
   excludeDomains?: string[];
   startPublishedDate?: string;
   endPublishedDate?: string;
-  numResults: number;
-  queryVariants?: string[];
+  numResults?: number;
+  additionalQueries?: string[];
   contents: {
-    text: {
+    text?: {
       maxCharacters?: number;
     } | boolean;
     context?: {
       maxCharacters?: number;
-    };
+    } | boolean;
     summary?: {
       query?: string;
     } | boolean;

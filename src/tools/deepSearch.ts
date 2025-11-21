@@ -8,19 +8,17 @@ import { createRequestLogger } from "../utils/logger.js";
 export function registerDeepSearchTool(server: McpServer, config?: { exaApiKey?: string }): void {
   server.tool(
     "deep_search_exa",
-    "Searches the web and return results in a natural language format. Deep search uses smart query expansion and provides high-quality summaries for each result. You can provide query variations for even better results.",
+    "Searches the web and return results in a natural language format. Deep search uses smart query expansion and provides high-quality context for each result. You can provide additional query variations for even better results.",
     {
       objective: z.string().describe("Query: Description of what the web search is looking for. Try to make the search query atomic - looking for a specific piece of information. May include guidance about preferred sources or freshness."),
-      search_queries: z.array(z.string()).describe("Query Variants: List of search queries, may include search operators. The search queries should be related to the objective. Only 2-4 query variants are recommended."),
-      numResults: z.number().optional().describe("Number of search results to return (default: 10)"),
-      livecrawl: z.enum(['fallback', 'preferred']).optional().describe("Live crawl mode - 'fallback': use live crawling as backup if cached content unavailable, 'preferred': prioritize live crawling (default: 'fallback')"),
+      search_queries: z.array(z.string()).optional().describe("Additional Queries: Optional list of additional search queries for query expansion. The search queries should be related to the objective. Only 2-4 additional queries are recommended."),
     },
     {
       readOnlyHint: true,
       destructiveHint: false,
       idempotentHint: true
     },
-    async ({ objective, search_queries, numResults, livecrawl }) => {
+    async ({ objective, search_queries }) => {
       const requestId = `deep_search_exa-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
       const logger = createRequestLogger(requestId, 'deep_search_exa');
       
@@ -41,18 +39,15 @@ export function registerDeepSearchTool(server: McpServer, config?: { exaApiKey?:
         const searchRequest: ExaSearchRequest = {
           query: objective,
           type: "deep",
-          numResults: numResults || 10,
           contents: {
-            text: false,
-            summary: true,
-            livecrawl: livecrawl || 'fallback'
+            context: true
           }
         };
         
-        // Add query variants if provided
+        // Add additional queries if provided
         if (search_queries && search_queries.length > 0) {
-          searchRequest.queryVariants = search_queries;
-          logger.log(`Using ${search_queries.length} query variants`);
+          searchRequest.additionalQueries = search_queries;
+          logger.log(`Using ${search_queries.length} additional queries`);
         } else {
           logger.log("Using automatic query expansion");
         }
@@ -67,22 +62,22 @@ export function registerDeepSearchTool(server: McpServer, config?: { exaApiKey?:
         
         logger.log("Received response from Exa API");
 
-        if (!response.data || !response.data.results || response.data.results.length === 0) {
+        if (!response.data || !response.data.context) {
           logger.log("Warning: Empty or invalid response from Exa API");
           return {
             content: [{
               type: "text" as const,
-              text: "No search results found. Please try a different query or adjust your search parameters."
+              text: "No search results found. Please try a different query."
             }]
           };
         }
 
-        logger.log(`Received ${response.data.results.length} results with summaries`);
+        logger.log(`Context received with ${response.data.context.length} characters`);
         
         const result = {
           content: [{
             type: "text" as const,
-            text: JSON.stringify(response.data, null, 2)
+            text: response.data.context
           }]
         };
         
