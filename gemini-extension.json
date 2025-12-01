@@ -4,7 +4,7 @@
   "description": "Official Exa MCP for web search, web crawling and getting technical code docs.",
   "mcpServers": {
     "exa": {
-      "url": "https://mcp.exa.ai/mcp"
+      "httpUrl": "https://mcp.exa.ai/mcp"
     }
   }
 }
