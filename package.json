@@ -1,6 +1,6 @@
 {
   "name": "exa-mcp-server",
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "A Model Context Protocol server with Exa for web search and web crawling. Provides real-time web searches with configurable tool selection, allowing users to enable or disable specific search capabilities. Supports customizable result counts, live crawling options, and returns content from the most relevant websites.",
   "mcpName": "io.github.exa-labs/exa-mcp-server",
   "type": "module",
@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.1",
-    "agnost": "^0.1.5",
+    "agnost": "^0.1.6",
     "axios": "^1.7.8",
     "zod": "^3.22.4"
   },
