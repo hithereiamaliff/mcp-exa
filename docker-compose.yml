@@ -15,6 +15,10 @@ services:
       - ENABLED_TOOLS=${ENABLED_TOOLS:-}
       - DEBUG=${DEBUG:-false}
       - NODE_ENV=production
+      - ANALYTICS_DIR=/app/data
+      - ANALYTICS_IMPORT_KEY=${ANALYTICS_IMPORT_KEY:-}
+    volumes:
+      - analytics-data:/app/data
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
       interval: 30s
@@ -32,3 +36,7 @@ services:
 networks:
   mcp-network:
     driver: bridge
+
+volumes:
+  analytics-data:
+    driver: local
