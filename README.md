@@ -19,7 +19,8 @@ This fork extends the original Exa MCP server with **VPS self-hosting capabiliti
 | **Nginx Configuration** | `deploy/nginx-mcp.conf` with reverse proxy settings, SSE support, and proper timeouts |
 | **GitHub Actions CI/CD** | `.github/workflows/deploy-vps.yml` for automatic deployment on push to main |
 | **Health Endpoint** | `/health` endpoint for container health checks and monitoring |
-| **Analytics Dashboard** | `/analytics` and `/analytics/dashboard` endpoints for usage tracking |
+| **Analytics Dashboard** | Full Chart.js dashboard with persistent storage, 4 interactive charts, and auto-refresh |
+| **Persistent Analytics** | Analytics data survives container restarts via Docker volume (`/app/data/analytics.json`) |
 | **Session Management** | Proper MCP session handling with session ID tracking |
 | **Flexible API Key** | Support for API key via query parameter, header, or environment variable |
 
@@ -132,10 +133,13 @@ Pushing to `main` branch will automatically deploy to your VPS.
 
 | Endpoint | Description |
 |----------|-------------|
-| `/health` | Health check (returns server status) |
+| `/` | Server info and available endpoints |
+| `/health` | Health check (returns server status and uptime) |
 | `/mcp` | MCP protocol endpoint |
-| `/analytics` | Usage statistics (JSON) |
-| `/analytics/dashboard` | Visual analytics dashboard |
+| `/analytics` | Full analytics summary (JSON) |
+| `/analytics/tools` | Tool usage statistics (JSON) |
+| `/analytics/dashboard` | Visual Chart.js dashboard with 4 interactive charts |
+| `/analytics/import` | Import backup data (POST, requires `ANALYTICS_IMPORT_KEY`) |
 
 ### Default Tools (All Enabled)
 
@@ -153,6 +157,25 @@ Unlike the original Exa MCP server which only enables `web_search_exa` and `get_
 To restrict tools, set the `ENABLED_TOOLS` environment variable in your `.env` file:
 ```bash
 ENABLED_TOOLS=web_search_exa,get_code_context_exa
+```
+
+### Analytics Dashboard
+
+The self-hosted version includes a full-featured analytics dashboard with:
+
+- **Persistent Storage** - Analytics data saved to `/app/data/analytics.json` and survives container restarts
+- **4 Interactive Charts** - Tool usage (doughnut), hourly requests (line), endpoints (bar), clients (horizontal bar)
+- **Real-time Stats** - Total requests, tool calls, unique clients, most used tool
+- **Recent Activity Feed** - Last 20 tool calls with timestamps and client info
+- **Auto-refresh** - Dashboard updates every 30 seconds
+- **Backup/Restore** - Import endpoint for restoring analytics from backups
+
+**Dashboard URL:** `https://mcp.yourdomain.com/exa/analytics/dashboard`
+
+**Environment Variables:**
+```bash
+ANALYTICS_DIR=/app/data                    # Where to store analytics (default: /app/data)
+ANALYTICS_IMPORT_KEY=your-secret-key       # Optional key for import endpoint security
 ```
 
 ---
