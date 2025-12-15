@@ -1,39 +1,43 @@
-# Use the official Node.js 18 image as a parent image
-FROM node:18-alpine AS builder
+# Exa MCP Server - Streamable HTTP
+# For self-hosting on VPS with nginx reverse proxy
 
-# Set the working directory in the container to /app
+FROM node:20-alpine
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json into the container
-COPY package.json package-lock.json ./
-
-# Install dependencies
-RUN npm ci --ignore-scripts
-
-# Copy the rest of the application code into the container
-COPY src/ ./src/
+# Copy package files
+COPY package*.json ./
 COPY tsconfig.json ./
 
-# Build the project for Docker
-RUN npm run build
+# Install ALL dependencies (including devDependencies for build)
+# Skip prepare script since source files aren't copied yet
+RUN npm ci --ignore-scripts
 
-# Use a minimal node image as the base image for running
-FROM node:18-alpine AS runner
+# Copy source code
+COPY src/ ./src/
 
-WORKDIR /app
+# Build TypeScript
+RUN npm run build:tsc
 
-# Copy compiled code from the builder stage
-COPY --from=builder /app/.smithery ./.smithery
-COPY package.json package-lock.json ./
+# Remove devDependencies after build
+RUN npm prune --production
 
-# Install only production dependencies
-RUN npm ci --production --ignore-scripts
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S mcp -u 1001
+RUN chown -R mcp:nodejs /app
+USER mcp
 
-# Set environment variable for the Exa API key
-ENV EXA_API_KEY=your-api-key-here
+# Expose port for HTTP server
+EXPOSE 8080
 
-# Expose the port the app runs on
-EXPOSE 3000
+# Environment variables (can be overridden at runtime)
+ENV PORT=8080
+ENV HOST=0.0.0.0
 
-# Run the application
-ENTRYPOINT ["node", ".smithery/index.cjs"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+
+# Start the HTTP server
+CMD ["node", "build/http-server.js"]
