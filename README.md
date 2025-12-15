@@ -12,6 +12,7 @@ This fork extends the original Exa MCP server with **VPS self-hosting capabiliti
 
 | Feature | Description |
 |---------|-------------|
+| **All Tools Enabled by Default** | Unlike the original (which only enables 2 tools), this fork enables all 8 tools by default |
 | **Streamable HTTP Transport** | New `src/http-server.ts` entry point using Express + `@modelcontextprotocol/sdk` Streamable HTTP transport for VPS deployment |
 | **Docker Support** | Production-ready `Dockerfile` with multi-stage build, non-root user, and health checks |
 | **Docker Compose** | `docker-compose.yml` for easy container orchestration with environment variable support |
@@ -135,6 +136,24 @@ Pushing to `main` branch will automatically deploy to your VPS.
 | `/mcp` | MCP protocol endpoint |
 | `/analytics` | Usage statistics (JSON) |
 | `/analytics/dashboard` | Visual analytics dashboard |
+
+### Default Tools (All Enabled)
+
+Unlike the original Exa MCP server which only enables `web_search_exa` and `get_code_context_exa` by default, this self-hosted fork enables **all 8 tools** out of the box:
+
+- `web_search_exa` - Real-time web search
+- `get_code_context_exa` - Code snippets and documentation search
+- `deep_search_exa` - Advanced web search with query expansion
+- `crawling_exa` - Extract content from specific URLs
+- `deep_researcher_start` - Start comprehensive AI research tasks
+- `deep_researcher_check` - Check research task status and results
+- `linkedin_search_exa` - Search LinkedIn profiles and companies
+- `company_research_exa` - Research companies and organizations
+
+To restrict tools, set the `ENABLED_TOOLS` environment variable in your `.env` file:
+```bash
+ENABLED_TOOLS=web_search_exa,get_code_context_exa
+```
 
 ---
 
