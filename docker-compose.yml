@@ -17,6 +17,8 @@ services:
       - NODE_ENV=production
       - ANALYTICS_DIR=/app/data
       - ANALYTICS_IMPORT_KEY=${ANALYTICS_IMPORT_KEY:-}
+      - KEY_SERVICE_URL=${KEY_SERVICE_URL:-}
+      - KEY_SERVICE_TOKEN=${KEY_SERVICE_TOKEN:-}
     volumes:
       - analytics-data:/app/data
     healthcheck:
@@ -27,6 +29,7 @@ services:
       start_period: 10s
     networks:
       - mcp-network
+      - key-service
     logging:
       driver: "json-file"
       options:
@@ -36,6 +39,9 @@ services:
 networks:
   mcp-network:
     driver: bridge
+  key-service:
+    external: true
+    name: mcp-network
 
 volumes:
   analytics-data:

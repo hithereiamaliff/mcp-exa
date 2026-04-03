@@ -106,7 +106,26 @@ Exa API
    sudo nginx -t && sudo systemctl reload nginx
    ```
 
-### Client Configuration (Self-Hosted)
+### Client Configuration (Hosted with Key Service)
+
+If the server is configured with `mcp-key-service`, use your `usr_` key in the URL path:
+
+```json
+{
+  "mcpServers": {
+    "exa": {
+      "transport": "streamable-http",
+      "url": "https://mcp.yourdomain.com/exa/mcp/usr_YOUR_USER_KEY"
+    }
+  }
+}
+```
+
+Alternatively, pass the key as a query parameter: `?api_key=usr_YOUR_USER_KEY`
+
+### Client Configuration (Self-Hosted / Direct Key)
+
+If key service is not configured, you can pass the Exa API key directly:
 
 ```json
 {
@@ -182,6 +201,8 @@ ANALYTICS_IMPORT_KEY=your-secret-key       # Optional key for import endpoint se
 
 ## Original Exa MCP Features
 
+The examples in this section describe Exa's official hosted service at `mcp.exa.ai`, not this VPS fork. Its auth parameters and default enabled tools may differ from this fork's `/exa/mcp` deployment.
+
 ## Exa Code: fast, efficient web context for coding agents
 
 Vibe coding should never have a bad vibe. `exa-code` is a huge step towards coding agents that never hallucinate.
@@ -218,12 +239,12 @@ Or enable all tools:
 https://mcp.exa.ai/mcp?tools=web_search_exa,deep_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
 ```
 
-You may include your exa api key in the url like this:
+For the official hosted Exa service, you may include your Exa API key in the URL like this:
 ```
 https://mcp.exa.ai/mcp?exaApiKey=YOUREXAKEY
 ```
 
-**Note:** By default, only `web_search_exa` and `get_code_context_exa` are enabled. Add other tools as needed using the `tools` parameter.
+**Note:** The official hosted Exa service may expose different default tools than this fork. This fork enables all 8 tools by default unless you restrict them with `tools=` or `ENABLED_TOOLS`.
 
 ---
 
@@ -392,7 +413,7 @@ The Exa MCP server includes powerful tools for developers and researchers:
 - **deep_researcher_start**: Start a smart AI researcher for complex questions. The AI will search the web, read many sources, and think deeply about your question to create a detailed research report.
 - **deep_researcher_check**: Check if your research is ready and get the results. Use this after starting a research task to see if it's done and get your comprehensive report.
 
-**Note:** By default, only `web_search_exa` and `get_code_context_exa` are enabled. You can enable additional tools using the `tools=` parameter (see examples below).
+**Note:** All 8 tools are enabled by default. You can restrict to specific tools using the `tools=` parameter if desired (see examples below).
 
 #### 💻 **Setup for Code Search Only** (Recommended for Developers)
 
@@ -441,14 +462,11 @@ You can either enable all tools or any specfic tools. Use a comma-separated list
 If you prefer to run the server directly, you can use npx:
 
 ```bash
-# Run with default tools only (web_search_exa and get_code_context_exa)
+# Run with all tools enabled (default)
 npx exa-mcp-server
 
-# Enable specific tools only
-npx exa-mcp-server tools=web_search_exa
-
-# All tools
-npx exa-mcp-server tools=web_search_exa,deep_search_exa,get_code_context_exa,crawling_exa,company_research_exa,linkedin_search_exa,deep_researcher_start,deep_researcher_check
+# Restrict to specific tools only
+npx exa-mcp-server tools=web_search_exa,get_code_context_exa
 ```
 
 ---

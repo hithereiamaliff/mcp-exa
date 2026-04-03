@@ -17,6 +17,18 @@ import { registerDeepResearchStartTool } from './tools/deepResearchStart.js';
 import { registerDeepResearchCheckTool } from './tools/deepResearchCheck.js';
 import { registerExaCodeTool } from './tools/exaCode.js';
 import { log } from './utils/logger.js';
+import { isKeyServiceEnabled, resolveKeyCredentials } from './key-service.js';
+
+// Structured HTTP error for auth/key-service failures
+class HttpError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly code: string,
+    message: string,
+  ) {
+    super(message);
+  }
+}
 
 // Server configuration
 const PORT = parseInt(process.env.PORT || '8080', 10);
@@ -200,18 +212,63 @@ function gracefulShutdown(signal: string): void {
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
-// Get API key from various sources
-function getApiKey(req: Request): string {
-  // Check query parameter
+// Extract usr_ key from path param or query string
+function getHostedUserKey(req: Request): string | undefined {
+  // Path param: /mcp/:userKey
+  const pathKey = (req.params as Record<string, string>).userKey;
+  if (pathKey && pathKey.startsWith('usr_')) {
+    return pathKey;
+  }
+  // Query param: ?api_key=usr_... or ?apiKey=usr_...
+  for (const param of ['api_key', 'apiKey'] as const) {
+    const val = req.query[param];
+    if (typeof val === 'string' && val.startsWith('usr_')) {
+      return val;
+    }
+  }
+  return undefined;
+}
+
+function getHostedPathKey(req: Request): string | undefined {
+  const pathKey = (req.params as Record<string, string>).userKey;
+  return typeof pathKey === 'string' && pathKey.length > 0 ? pathKey : undefined;
+}
+
+// Resolve Exa API key from various sources (async for key-service)
+async function resolveExaApiKey(req: Request): Promise<string> {
+  const pathKey = getHostedPathKey(req);
+  if (pathKey && !pathKey.startsWith('usr_')) {
+    throw new HttpError(403, 'invalid_key', 'Path-based auth requires a usr_ API key');
+  }
+
+  const userKey = getHostedUserKey(req);
+
+  // 1. If a usr_ key is present, resolve via key-service
+  if (userKey) {
+    if (!isKeyServiceEnabled()) {
+      throw new HttpError(503, 'service_unavailable', 'Key service is not configured on this server');
+    }
+    const result = await resolveKeyCredentials(userKey);
+    if (!result.ok) {
+      const statusMap = { invalid_key: 403, service_unavailable: 503, malformed_response: 502 } as const;
+      throw new HttpError(statusMap[result.reason], result.reason, `Key resolution failed: ${result.reason}`);
+    }
+    return result.credentials.apiKey;
+  }
+
+  // 2. If key-service is configured but no usr_ key provided, require one
+  if (isKeyServiceEnabled()) {
+    throw new HttpError(401, 'missing_key', 'This server requires a usr_ API key. Use /mcp/usr_YOUR_KEY or ?api_key=usr_YOUR_KEY');
+  }
+
+  // 3. Legacy / self-hosted: direct key from query, header, or env
   if (req.query.apiKey && typeof req.query.apiKey === 'string') {
     return req.query.apiKey;
   }
-  // Check header
   const headerKey = req.headers['x-api-key'];
   if (headerKey && typeof headerKey === 'string') {
     return headerKey;
   }
-  // Fall back to environment variable
   return process.env.EXA_API_KEY || '';
 }
 
@@ -653,85 +710,104 @@ app.get('/analytics/dashboard', (req: Request, res: Response) => {
 // Store transports by session ID
 const transports = new Map<string, StreamableHTTPServerTransport>();
 
-// MCP endpoint - handles all MCP protocol messages
-app.all('/mcp', async (req: Request, res: Response) => {
+// MCP endpoint handler — shared between /mcp and /mcp/:userKey routes
+async function handleMcpRequest(req: Request, res: Response): Promise<void> {
   trackRequest(req, '/mcp');
-  
+
   // Track tool calls from MCP requests
   if (req.method === 'POST' && req.body?.method === 'tools/call' && req.body?.params?.name) {
     trackToolCall(req.body.params.name, req);
   }
 
-  const apiKey = getApiKey(req);
   const sessionId = req.headers['mcp-session-id'] as string | undefined;
 
-  try {
-    // Handle GET request for SSE stream
-    if (req.method === 'GET') {
-      if (!sessionId || !transports.has(sessionId)) {
-        res.status(400).json({ error: 'Invalid or missing session ID' });
-        return;
-      }
+  // Handle GET request for SSE stream (existing session only)
+  if (req.method === 'GET') {
+    if (!sessionId || !transports.has(sessionId)) {
+      res.status(400).json({ error: 'Invalid or missing session ID' });
+      return;
+    }
+    const transport = transports.get(sessionId)!;
+    await transport.handleRequest(req, res);
+    return;
+  }
+
+  // Handle DELETE request to close session
+  if (req.method === 'DELETE') {
+    if (sessionId && transports.has(sessionId)) {
       const transport = transports.get(sessionId)!;
-      await transport.handleRequest(req, res);
-      return;
+      await transport.close();
+      transports.delete(sessionId);
     }
+    res.status(204).end();
+    return;
+  }
 
-    // Handle DELETE request to close session
-    if (req.method === 'DELETE') {
-      if (sessionId && transports.has(sessionId)) {
-        const transport = transports.get(sessionId)!;
-        await transport.close();
-        transports.delete(sessionId);
-      }
-      res.status(204).end();
-      return;
-    }
-
-    // Handle POST request
-    if (req.method === 'POST') {
-      // Check if this is an existing session
-      if (sessionId && transports.has(sessionId)) {
-        const transport = transports.get(sessionId)!;
-        await transport.handleRequest(req, res, req.body);
-        return;
-      }
-
-      // Create new session for initialization request
-      const server = createMcpServer(apiKey);
-      const transport = new StreamableHTTPServerTransport({
-        sessionIdGenerator: () => `exa-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
-      });
-
-      // Store transport for future requests
-      transport.onclose = () => {
-        const sid = (transport as unknown as { sessionId?: string }).sessionId;
-        if (sid) {
-          transports.delete(sid);
-        }
-      };
-
-      await server.server.connect(transport);
-
-      // Handle the request
+  // Handle POST request
+  if (req.method === 'POST') {
+    // Existing session — no key resolution needed
+    if (sessionId && transports.has(sessionId)) {
+      const transport = transports.get(sessionId)!;
       await transport.handleRequest(req, res, req.body);
-
-      // Store transport if session was created
-      const newSessionId = res.getHeader('mcp-session-id') as string | undefined;
-      if (newSessionId) {
-        transports.set(newSessionId, transport);
-      }
       return;
     }
 
-    // Method not allowed
-    res.status(405).json({ error: 'Method not allowed' });
-  } catch (error) {
-    log(`MCP endpoint error: ${error instanceof Error ? error.message : String(error)}`);
-    res.status(500).json({
-      error: 'Internal server error',
-      message: error instanceof Error ? error.message : String(error)
+    // New session — resolve API key (only place key resolution happens)
+    const apiKey = await resolveExaApiKey(req);
+    const server = createMcpServer(apiKey);
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: () => `exa-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
     });
+
+    // Store transport for future requests
+    transport.onclose = () => {
+      const sid = (transport as unknown as { sessionId?: string }).sessionId;
+      if (sid) {
+        transports.delete(sid);
+      }
+    };
+
+    await server.server.connect(transport);
+
+    // Handle the request
+    await transport.handleRequest(req, res, req.body);
+
+    // Store transport if session was created
+    const newSessionId = res.getHeader('mcp-session-id') as string | undefined;
+    if (newSessionId) {
+      transports.set(newSessionId, transport);
+    }
+    return;
+  }
+
+  // Method not allowed
+  res.status(405).json({ error: 'Method not allowed' });
+}
+
+// MCP routes — path-based usr_ key first, then query/header/env fallback
+app.all('/mcp/:userKey', async (req: Request, res: Response) => {
+  try {
+    await handleMcpRequest(req, res);
+  } catch (error) {
+    if (error instanceof HttpError) {
+      res.status(error.status).json({ error: error.code, message: error.message });
+      return;
+    }
+    log(`MCP endpoint error: ${error instanceof Error ? error.message : String(error)}`);
+    res.status(500).json({ error: 'Internal server error', message: error instanceof Error ? error.message : String(error) });
+  }
+});
+
+app.all('/mcp', async (req: Request, res: Response) => {
+  try {
+    await handleMcpRequest(req, res);
+  } catch (error) {
+    if (error instanceof HttpError) {
+      res.status(error.status).json({ error: error.code, message: error.message });
+      return;
+    }
+    log(`MCP endpoint error: ${error instanceof Error ? error.message : String(error)}`);
+    res.status(500).json({ error: 'Internal server error', message: error instanceof Error ? error.message : String(error) });
   }
 });
 
@@ -740,6 +816,13 @@ app.listen(PORT, HOST, () => {
   log(`Exa MCP Server running on http://${HOST}:${PORT}`);
   log(`Health check: http://${HOST}:${PORT}/health`);
   log(`MCP endpoint: http://${HOST}:${PORT}/mcp`);
+  if (isKeyServiceEnabled()) {
+    log(`Auth mode: key-service (usr_ keys resolved via external service)`);
+  } else if (process.env.EXA_API_KEY) {
+    log(`Auth mode: self-hosted (EXA_API_KEY environment variable)`);
+  } else {
+    log(`Auth mode: per-request (apiKey query param or x-api-key header required)`);
+  }
   log(`Analytics: http://${HOST}:${PORT}/analytics`);
   log(`Dashboard: http://${HOST}:${PORT}/analytics/dashboard`);
 });
